@@ -12,7 +12,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${prefix}/bin/python ${prefix}/bin/gunicorn wpsapp:app -c ${prefix}/etc/pywps/gunicorn.conf.py")
+    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:app -c ${prefix}/etc/pywps/gunicorn.conf.py")
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -22,6 +22,7 @@ class Recipe(object):
         b_options = buildout['buildout']
         self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
 
+        self.bin_dir = b_options.get('bin-directory')
         self.hostname = options.get('hostname', 'localhost')
         self.port = options.get('port', '8091')
         self.processes_path = options.get('processesPath')
@@ -71,6 +72,7 @@ class Recipe(object):
         """
         result = templ_gunicorn.render(
             prefix=self.anaconda_home,
+            bin_dir=self.bin_dir,
             )
         output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'gunicorn.conf.py')
         conda.makedirs(os.path.dirname(output))
@@ -111,7 +113,7 @@ class Recipe(object):
             self.buildout,
             self.name,
             {'program': 'pywps',
-             'command': templ_cmd.render(prefix=self.anaconda_home),
+             'command': templ_cmd.render(prefix=self.anaconda_home, bin_dir=self.bin_dir),
              'directory': os.path.join(self.anaconda_home, 'etc', 'pywps')
              })
         return script.install()
