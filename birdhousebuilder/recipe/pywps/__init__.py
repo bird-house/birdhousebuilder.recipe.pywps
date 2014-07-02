@@ -6,10 +6,13 @@
 import os
 from mako.template import Template
 
-from birdhousebuilder.recipe import conda
+from birdhousebuilder.recipe import conda, supervisor, nginx
 
 templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
+templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
+templ_cmd = Template(
+    "${prefix}/bin/python ${prefix}/bin/gunicorn wpsapp:app -c ${prefix}/etc/pywps/gunicorn.conf.py")
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -27,7 +30,10 @@ class Recipe(object):
         installed = []
         installed += list(self.install_pywps())
         installed += list(self.install_config())
+        installed += list(self.install_app())
         installed += list(self.install_gunicorn())
+        installed += list(self.install_program())
+        installed += list(self.install_nginx())
         return installed
 
     def install_pywps(self):
@@ -77,6 +83,52 @@ class Recipe(object):
         with open(output, 'wt') as fp:
             fp.write(result)
         return [output]
+
+    def install_app(self):
+        """
+        install etc/wpsapp.py
+        """
+        result = templ_app.render(
+            prefix=self.anaconda_home,
+            )
+        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'wpsapp.py')
+        conda.makedirs(os.path.dirname(output))
+                
+        try:
+            os.remove(output)
+        except OSError:
+            pass
+
+        with open(output, 'wt') as fp:
+            fp.write(result)
+        return [output]
+
+    def install_program(self):
+        """
+        install supervisor config for pywps
+        """
+        script = supervisor.Recipe(
+            self.buildout,
+            self.name,
+            {'program': 'pywps',
+             'command': templ_cmd.render(prefix=self.anaconda_home),
+             'directory': os.path.join(self.anaconda_home, 'etc', 'pywps')
+             })
+        return script.install()
+
+    def install_nginx(self):
+        """
+        install nginx for pywps
+        """
+        script = nginx.Recipe(
+            self.buildout,
+            self.name,
+            {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
+             'sites': self.name,
+             'prefix': self.anaconda_home,
+             'port': self.port,
+             })
+        return script.install()
         
     def update(self):
         return self.install()

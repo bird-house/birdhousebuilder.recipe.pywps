@@ -50,6 +50,7 @@ setup(name='birdhousebuilder.recipe.pywps',
                         # -*- Extra requirements: -*-
             'Mako',
             'birdhousebuilder.recipe.conda',
+            'birdhousebuilder.recipe.supervisor',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
