@@ -8,7 +8,8 @@ from mako.template import Template
 
 from birdhousebuilder.recipe import conda
 
-templ_start_stop = Template(filename=os.path.join(os.path.dirname(__file__), "supervisord"))
+templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
+templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -17,38 +18,55 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
         self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
-        bin_path = os.path.join(self.anaconda_home, 'bin')
-        lib_path = os.path.join(self.anaconda_home, 'lib')
-        self.conda_channels = b_options.get('conda-channels')
 
-        self.host = b_options.get('supervisor-host', 'localhost')
-        self.port = b_options.get('supervisor-port', '9001')
-        
-        self.program = options.get('program', name)
+        self.hostname = options.get('hostname', 'localhost')
+        self.port = options.get('port', '8091')
+        self.processes_path = options.get('processesPath')
 
     def install(self):
         installed = []
-        installed += list(self.install_supervisor())
+        installed += list(self.install_pywps())
         installed += list(self.install_config())
+        installed += list(self.install_gunicorn())
         return installed
 
-    def install_supervisor(self):
+    def install_pywps(self):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'supervisor'})
+            {'pkgs': 'pywps gunicorn'})
         return script.install()
         
     def install_config(self):
         """
-        install supervisor main config file
+        install etc/pywps.cfg
         """
-        result = templ_config.render(
+        result = templ_pywps.render(
             prefix=self.anaconda_home,
-            host=self.host,
-            port=self.port)
+            hostname=self.hostname,
+            port=self.port,
+            processesPath=self.processes_path,
+            )
+        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'pywps.cfg')
+        conda.makedirs(os.path.dirname(output))
+                
+        try:
+            os.remove(output)
+        except OSError:
+            pass
 
-        output = os.path.join(self.anaconda_home, 'etc', 'supervisor', 'supervisord.conf')
+        with open(output, 'wt') as fp:
+            fp.write(result)
+        return [output]
+
+    def install_gunicorn(self):
+        """
+        install etc/gunicorn.conf.py
+        """
+        result = templ_gunicorn.render(
+            prefix=self.anaconda_home,
+            )
+        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'gunicorn.conf.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
