@@ -1,9 +1,9 @@
-bind = 'unix://${prefix}/var/run/pywps.socket'
+bind = 'unix://${prefix}/var/run/${sites}.socket'
 workers = 3
 
 # environment
 raw_env = ["HOME=${prefix}/var/lib/pywps", 
-           "PYWPS_CFG=${prefix}/etc/pywps/pywps.cfg", 
+           "PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg", 
            "PATH=${bin_dir}:${prefix}/bin:/usr/bin:/bin", 
            ]                                                                                                               
 

@@ -46,7 +46,7 @@ class Recipe(object):
         
     def install_config(self):
         """
-        install etc/pywps.cfg
+        install pywps config in etc/pywpsx
         """
         result = templ_pywps.render(
             prefix=self.anaconda_home,
@@ -54,7 +54,7 @@ class Recipe(object):
             port=self.port,
             processesPath=self.processes_path,
             )
-        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'pywps.cfg')
+        output = os.path.join(self.anaconda_home, 'etc', 'pywps', self.name + '.cfg')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -72,6 +72,7 @@ class Recipe(object):
         """
         result = templ_gunicorn.render(
             prefix=self.anaconda_home,
+            sites=self.name,
             bin_dir=self.bin_dir,
             )
         output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'gunicorn.conf.py')
@@ -112,7 +113,7 @@ class Recipe(object):
         script = supervisor.Recipe(
             self.buildout,
             self.name,
-            {'program': 'pywps',
+            {'program': self.name,
              'command': templ_cmd.render(prefix=self.anaconda_home, bin_dir=self.bin_dir),
              'directory': os.path.join(self.anaconda_home, 'etc', 'pywps')
              })
