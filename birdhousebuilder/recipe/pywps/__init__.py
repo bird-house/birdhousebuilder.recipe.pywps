@@ -20,12 +20,25 @@ class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
+        
         self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
+        
+        
         self.options['prefix'] = self.anaconda_home
         self.options['hostname'] = options.get('hostname', 'localhost')
+
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
-        self.options['processesPath'] = options.get('processesPath')
+        
+        processes_path = os.path.join(b_options.get('directory'), 'processes')
+        self.options['processesPath'] = options.get('processesPath', processes_path)
+
+        self.options['abstract'] = options.get('abstract', 'See http://pywps.wald.intevation.org and http://www.opengeospatial.org/standards/wps')
+        self.options['providerName'] = options.get('providerName', '')
+        self.options['city'] = options.get('city', '')
+        self.options['country'] = options.get('country', '')
+        self.options['providerSite'] = options.get('providerSite', '')
+        self.options['logLevel'] = options.get('logLevel', 'DEBUG')
 
         self.bin_dir = b_options.get('bin-directory')
 
