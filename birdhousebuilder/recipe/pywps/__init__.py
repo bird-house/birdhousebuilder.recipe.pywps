@@ -23,7 +23,7 @@ class Recipe(object):
         
         self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
         
-        
+        self.options['name'] = self.name
         self.options['prefix'] = self.anaconda_home
         self.options['hostname'] = options.get('hostname', 'localhost')
 
