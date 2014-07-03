@@ -21,11 +21,13 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
         self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
+        self.options['prefix'] = self.anaconda_home
+        self.options['hostname'] = options.get('hostname', 'localhost')
+        self.port = options.get('port', '8091')
+        self.options['port'] = self.port
+        self.options['processesPath'] = options.get('processesPath')
 
         self.bin_dir = b_options.get('bin-directory')
-        self.hostname = options.get('hostname', 'localhost')
-        self.port = options.get('port', '8091')
-        self.processes_path = options.get('processesPath')
 
     def install(self):
         installed = []
@@ -46,14 +48,9 @@ class Recipe(object):
         
     def install_config(self):
         """
-        install pywps config in etc/pywpsx
+        install pywps config in etc/pywps
         """
-        result = templ_pywps.render(
-            prefix=self.anaconda_home,
-            hostname=self.hostname,
-            port=self.port,
-            processesPath=self.processes_path,
-            )
+        result = templ_pywps.render(**self.options)
         output = os.path.join(self.anaconda_home, 'etc', 'pywps', self.name + '.cfg')
         conda.makedirs(os.path.dirname(output))
                 
