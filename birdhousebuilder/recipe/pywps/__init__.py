@@ -30,6 +30,8 @@ class Recipe(object):
 
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
+        self.output_port = options.get('output-port','8090')
+        self.options['output_port'] = self.output_port
         
         processes_path = os.path.join(b_options.get('directory'), 'processes')
         self.options['processesPath'] = options.get('processesPath', processes_path)
@@ -50,6 +52,7 @@ class Recipe(object):
         installed += list(self.install_app())
         installed += list(self.install_gunicorn())
         installed += list(self.install_supervisor())
+        installed += list(self.install_nginx_default())
         installed += list(self.install_nginx())
         return installed
 
@@ -137,6 +140,20 @@ class Recipe(object):
             {'program': self.sites,
              'command': templ_cmd.render(prefix=self.anaconda_home, bin_dir=self.bin_dir, sites=self.sites),
              'directory': os.path.join(self.anaconda_home, 'etc', 'pywps')
+             })
+        return script.install()
+
+    def install_nginx_default(self):
+        """
+        install nginx for pywps outputs
+        """
+        script = nginx.Recipe(
+            self.buildout,
+            self.name,
+            {'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
+             'sites': 'default',
+             'prefix': self.anaconda_home,
+             'port': self.output_port,
              })
         return script.install()
 
