@@ -59,7 +59,7 @@ class Recipe(object):
             self.name,
             {'pkgs': 'pywps gunicorn'})
         
-        mypath = os.path.join(self.anaconda_home, 'var', 'lib', 'pywps', self.sites)
+        mypath = os.path.join(self.anaconda_home, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
 
         mypath = os.path.join(self.anaconda_home, 'var', 'tmp')
