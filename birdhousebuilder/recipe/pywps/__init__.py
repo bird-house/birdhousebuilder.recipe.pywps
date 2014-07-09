@@ -21,7 +21,7 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
         
-        self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home)
+        self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home())
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
