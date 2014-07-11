@@ -7,7 +7,7 @@ birdhousebuilder.recipe.pywps
 Introduction
 ************
 
-``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to configure pywps.
+``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to configure pywps with anaconda.
 
 .. _`Buildout`: http://buildout.org/
 
