@@ -26,7 +26,8 @@ class Recipe(object):
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
         self.options['prefix'] = self.anaconda_home
-        self.options['hostname'] = options.get('hostname', 'localhost')
+        self.hostname = options.get('hostname', 'localhost')
+        self.options['hostname'] = self.hostname
 
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
@@ -36,6 +37,7 @@ class Recipe(object):
         processes_path = os.path.join(b_options.get('directory'), 'processes')
         self.options['processesPath'] = options.get('processesPath', processes_path)
 
+        self.options['title'] = options.get('title', 'PyWPS Server on http://%s:%s/wps' % (self.hostname, self.port))
         self.options['abstract'] = options.get('abstract', 'See http://pywps.wald.intevation.org and http://www.opengeospatial.org/standards/wps')
         self.options['providerName'] = options.get('providerName', '')
         self.options['city'] = options.get('city', '')
