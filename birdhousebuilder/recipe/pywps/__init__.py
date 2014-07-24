@@ -29,9 +29,10 @@ class Recipe(object):
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
 
+        self.options['proxyEnabled'] = options.get('proxyEnabled', 'false')
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
-        self.output_port = options.get('output-port','8090')
+        self.output_port = options.get('output_port','8090')
         self.options['output_port'] = self.output_port
         
         processes_path = os.path.join(b_options.get('directory'), 'processes')
