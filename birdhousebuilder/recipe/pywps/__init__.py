@@ -21,11 +21,11 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
         
-        self.anaconda_home = b_options.get('anaconda-home', conda.anaconda_home())
+        self.prefix = b_options.get('anaconda-home', conda.anaconda_home())
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
-        self.options['prefix'] = self.anaconda_home
+        self.options['prefix'] = self.prefix
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
 
@@ -64,13 +64,13 @@ class Recipe(object):
             self.name,
             {'pkgs': 'pywps gunicorn'})
         
-        mypath = os.path.join(self.anaconda_home, 'var', 'lib', 'pywps', 'outputs', self.sites)
+        mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
 
-        mypath = os.path.join(self.anaconda_home, 'var', 'tmp')
+        mypath = os.path.join(self.prefix, 'var', 'tmp')
         conda.makedirs(mypath)
 
-        mypath = os.path.join(self.anaconda_home, 'var', 'log', 'pywps')
+        mypath = os.path.join(self.prefix, 'var', 'log', 'pywps')
         conda.makedirs(mypath)
 
         return script.install()
@@ -80,7 +80,7 @@ class Recipe(object):
         install pywps config in etc/pywps
         """
         result = templ_pywps.render(**self.options)
-        output = os.path.join(self.anaconda_home, 'etc', 'pywps', self.sites + '.cfg')
+        output = os.path.join(self.prefix, 'etc', 'pywps', self.sites + '.cfg')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -97,11 +97,11 @@ class Recipe(object):
         install etc/gunicorn.conf.py
         """
         result = templ_gunicorn.render(
-            prefix=self.anaconda_home,
+            prefix=self.prefix,
             sites=self.sites,
             bin_dir=self.bin_dir,
             )
-        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'gunicorn.'+self.sites+'.py')
+        output = os.path.join(self.prefix, 'etc', 'pywps', 'gunicorn.'+self.sites+'.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -118,9 +118,9 @@ class Recipe(object):
         install etc/wpsapp.py
         """
         result = templ_app.render(
-            prefix=self.anaconda_home,
+            prefix=self.prefix,
             )
-        output = os.path.join(self.anaconda_home, 'etc', 'pywps', 'wpsapp.py')
+        output = os.path.join(self.prefix, 'etc', 'pywps', 'wpsapp.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -140,8 +140,8 @@ class Recipe(object):
             self.buildout,
             self.sites,
             {'program': self.sites,
-             'command': templ_cmd.render(prefix=self.anaconda_home, bin_dir=self.bin_dir, sites=self.sites),
-             'directory': os.path.join(self.anaconda_home, 'etc', 'pywps')
+             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
+             'directory': os.path.join(self.prefix, 'etc', 'pywps')
              })
         return script.install()
 
@@ -154,7 +154,7 @@ class Recipe(object):
             self.name,
             {'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'sites': 'default',
-             'prefix': self.anaconda_home,
+             'prefix': self.prefix,
              'port': self.output_port,
              })
         return script.install()
@@ -168,7 +168,7 @@ class Recipe(object):
             self.name,
             {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'sites': self.sites,
-             'prefix': self.anaconda_home,
+             'prefix': self.prefix,
              'port': self.port,
              })
         return script.install()
