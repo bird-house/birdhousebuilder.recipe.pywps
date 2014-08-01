@@ -90,7 +90,7 @@ After installing with Buildout start the ``PyWPS`` service with::
 
 Open your browser with the following URL:: 
 
-  http://localhost:8091/csw?service=WPS&version=1.0.0&request=GetCapabilities
+  http://localhost:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities
 
 
 
