@@ -41,10 +41,10 @@ The recipe supports the following options:
    Buildout option with the root folder of the Anaconda installation. Default: ``$HOME/anaconda``.
 
 ``hostname``
-   The hostname of the pycsw service (nginx). Default: ``localhost``
+   The hostname of the ``PyWPS`` service (nginx). Default: ``localhost``
 
 ``port``
-   The port of the pycsw service (nginx). Default: ``8091``
+   The port of the ``PyWPS`` service (nginx). Default: ``8091``
 
 ``sites``
    The name of your WPS project (used for config names and folder path).
