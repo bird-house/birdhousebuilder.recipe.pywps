@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.1.4 (2014-08-17)
+==================
+
+added /usr/local/bin to gunicorn path (needed for brew on macosx)
+
 0.1.3 (2014-08-01)
 ==================
 
