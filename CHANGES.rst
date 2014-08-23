@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.1.5 (2014-08-23)
+==================
+
+added cache path to nginx configuration.
+
 0.1.4 (2014-08-17)
 ==================
 

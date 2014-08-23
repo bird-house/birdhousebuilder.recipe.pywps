@@ -68,6 +68,10 @@ class Recipe(object):
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
 
+        # cache path
+        mypath = os.path.join(self.prefix, 'var', 'cache', 'pywps')
+        conda.makedirs(mypath)
+
         mypath = os.path.join(self.prefix, 'var', 'tmp')
         conda.makedirs(mypath)
 
