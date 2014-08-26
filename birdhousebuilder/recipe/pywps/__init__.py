@@ -29,6 +29,7 @@ class Recipe(object):
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
 
+        self.options['master'] = options.get('master', 'true')
         self.options['proxyEnabled'] = options.get('proxyEnabled', 'false')
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
@@ -177,6 +178,7 @@ class Recipe(object):
              'port': self.port,
              'user': self.options.get('user'),
              'group': self.options.get('group'),
+             'master': self.options.get('master'),
              'proxy-enabled': self.options['proxyEnabled'],
              })
         return script.install()
