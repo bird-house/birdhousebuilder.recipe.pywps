@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright (C)2014 DKRZ GmbH
 
 """Recipe pywps"""
 
@@ -30,6 +29,7 @@ class Recipe(object):
         self.options['hostname'] = self.hostname
 
         self.options['master'] = options.get('master', 'true')
+        self.options['phoenix'] = options.get('phoenix', 'false')
         self.options['proxyEnabled'] = options.get('proxyEnabled', 'false')
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
