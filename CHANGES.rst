@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.1.8 (2014-11-03)
+==================
+
+* GDAL_DATA added to environment in gunicorn.conf.py template.
+
 0.1.7 (2014-08-27)
 ==================
 
