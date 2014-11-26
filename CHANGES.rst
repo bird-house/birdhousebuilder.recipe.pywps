@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.1.9 (2014-11-26)
+==================
+
+* Added cache section to pywps.cfg template.
+
 0.1.8 (2014-11-03)
 ==================
 
