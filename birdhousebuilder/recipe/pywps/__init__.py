@@ -47,6 +47,7 @@ class Recipe(object):
         self.options['logLevel'] = options.get('logLevel', 'DEBUG')
 
         self.bin_dir = b_options.get('bin-directory')
+        self.package_dir = b_options.get('directory')
 
     def install(self):
         installed = []
@@ -105,6 +106,7 @@ class Recipe(object):
             prefix=self.prefix,
             sites=self.sites,
             bin_dir=self.bin_dir,
+            package_dir=self.package_dir,
             )
         output = os.path.join(self.prefix, 'etc', 'pywps', 'gunicorn.'+self.sites+'.py')
         conda.makedirs(os.path.dirname(output))
