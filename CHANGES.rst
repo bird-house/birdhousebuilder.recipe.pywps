@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.1.10 (2014-12-06)
+===================
+
+* Sets PYTHONPATH in gunicon.conf.py. Used in PyWPS async processes.
+
 0.1.9 (2014-11-26)
 ==================
 

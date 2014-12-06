@@ -58,7 +58,7 @@ class Recipe(object):
         installed += list(self.install_supervisor())
         installed += list(self.install_nginx_default())
         installed += list(self.install_nginx())
-        return installed
+        return tuple()
 
     def install_pywps(self):
         script = conda.Recipe(
@@ -139,7 +139,7 @@ class Recipe(object):
             fp.write(result)
         return [output]
 
-    def install_supervisor(self):
+    def install_supervisor(self, update=False):
         """
         install supervisor config for pywps
         """
@@ -150,9 +150,13 @@ class Recipe(object):
              'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
              'directory': os.path.join(self.prefix, 'etc', 'pywps')
              })
-        return script.install()
+        if update == True:
+            script.update()
+        else:
+            script.install()
+        return tuple()
 
-    def install_nginx_default(self):
+    def install_nginx_default(self, update=False):
         """
         install nginx for pywps outputs
         """
@@ -164,9 +168,13 @@ class Recipe(object):
              'prefix': self.prefix,
              'port': self.output_port,
              })
-        return script.install()
+        if update == True:
+            script.update()
+        else:
+            script.install()
+        return tuple()
 
-    def install_nginx(self):
+    def install_nginx(self, update=False):
         """
         install nginx for pywps
         """
@@ -181,10 +189,22 @@ class Recipe(object):
              'group': self.options.get('group'),
              'proxy-enabled': self.options['proxyEnabled'],
              })
-        return script.install()
+        if update == True:
+            script.update()
+        else:
+            script.install()
+        return tuple()
         
     def update(self):
-        return self.install()
+        # self.install_pywps()
+        self.install_config()
+        self.install_app()
+        self.install_gunicorn()
+        self.install_supervisor(update=True)
+        self.install_nginx_default(update=True)
+        self.install_nginx(update=True)
+        
+        return tuple()
 
 def uninstall(name, options):
     pass
