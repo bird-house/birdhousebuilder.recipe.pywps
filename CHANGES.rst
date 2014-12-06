@@ -4,6 +4,7 @@ Change History
 0.1.10 (2014-12-06)
 ===================
 
+* Don't update conda on buildout update.
 * Sets PYTHONPATH in gunicon.conf.py. Used in PyWPS async processes.
 
 0.1.9 (2014-11-26)
