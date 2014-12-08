@@ -44,7 +44,7 @@ class Recipe(object):
         self.options['city'] = options.get('city', '')
         self.options['country'] = options.get('country', '')
         self.options['providerSite'] = options.get('providerSite', '')
-        self.options['logLevel'] = options.get('logLevel', 'DEBUG')
+        self.options['logLevel'] = options.get('logLevel', 'INFO')
 
         self.bin_dir = b_options.get('bin-directory')
         self.package_dir = b_options.get('directory')
