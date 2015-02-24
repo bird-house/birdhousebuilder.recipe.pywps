@@ -93,7 +93,7 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
 
 After installing with Buildout start the ``PyWPS`` service with::
 
-  $ cd /home/myself/anaconda
+  $ cd /home/myself/.conda/envs/birdhouse
   $ etc/init.d/supervisord start  # start|stop|restart
   $ etc/init.d/nginx start        # start|stop|restart
   $ bin/supervisorctl status      # check that pycsw is running
