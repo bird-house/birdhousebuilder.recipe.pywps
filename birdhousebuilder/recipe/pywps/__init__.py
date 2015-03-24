@@ -79,6 +79,9 @@ class Recipe(object):
         mypath = os.path.join(self.prefix, 'var', 'log', 'pywps')
         conda.makedirs(mypath)
 
+        mypath = os.path.join(self.prefix, 'var', 'cache', 'mako')
+        conda.makedirs(mypath)
+
         return script.install()
         
     def install_config(self):
