@@ -12,8 +12,7 @@ def python_path():
     return ':'.join(ppath)
 
 # environment
-raw_env = ["HOME=${prefix}/var/lib/pywps", 
-           "PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg", 
+raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg", 
            "PATH=${bin_dir}:${prefix}/bin:/usr/bin:/bin:/usr/local/bin",
            "GDAL_DATA=${prefix}/share/gdal",
            "PYTHONPATH=%s" % python_path(),

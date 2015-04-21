@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.2.2 (2015-04-21)
+==================
+
+* do not set ``HOME`` environment variable in gunicorn.
+
 0.2.1 (2015-03-24)
 ==================
 
