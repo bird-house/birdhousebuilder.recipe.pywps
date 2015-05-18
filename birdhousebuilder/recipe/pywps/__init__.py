@@ -151,7 +151,9 @@ class Recipe(object):
             self.sites,
             {'program': self.sites,
              'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
-             'directory': os.path.join(self.prefix, 'etc', 'pywps')
+             'directory': os.path.join(self.prefix, 'etc', 'pywps'),
+             'stopwaitsecs': '30',
+             'killasgroup': 'true',
              })
         if update == True:
             script.update()
