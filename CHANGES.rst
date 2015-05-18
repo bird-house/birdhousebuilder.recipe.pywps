@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.2.3 (2015-05-18)
+==================
+
+* updated supervisor config.
+* log pywps to stderr/supervisor.
+
 0.2.2 (2015-04-21)
 ==================
 
