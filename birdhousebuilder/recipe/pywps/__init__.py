@@ -28,8 +28,6 @@ class Recipe(object):
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
 
-        self.options['phoenix'] = options.get('phoenix', 'false')
-        self.options['proxyEnabled'] = options.get('proxyEnabled', 'false')
         self.port = options.get('port', '8091')
         self.options['port'] = self.port
         self.output_port = options.get('output_port','8090')
@@ -192,7 +190,6 @@ class Recipe(object):
              'port': self.port,
              'user': self.options.get('user'),
              'group': self.options.get('group'),
-             'proxy-enabled': self.options['proxyEnabled'],
              })
         if update == True:
             script.update()
