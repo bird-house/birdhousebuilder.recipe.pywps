@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.2.4 (2015-06-23)
+==================
+
+* removed unused proxyEnabled option.
+* cleaned up templates.
+
 0.2.3 (2015-05-18)
 ==================
 
