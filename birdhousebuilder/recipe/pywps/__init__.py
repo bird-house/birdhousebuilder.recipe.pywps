@@ -25,13 +25,11 @@ class Recipe(object):
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
-        self.hostname = options.get('hostname', 'localhost')
-        self.options['hostname'] = self.hostname
+        self.options['hostname'] = options.get('hostname', 'localhost')
 
-        self.port = options.get('port', '8091')
-        self.options['port'] = self.port
-        self.output_port = options.get('output_port','8090')
-        self.options['output_port'] = self.output_port
+        self.options['http_port'] = options.get('http_port', '8091')
+        self.options['https_port'] = options.get('https_port', '28091')
+        self.options['output_port'] = options.get('output_port','8090')
         
         processes_path = os.path.join(b_options.get('directory'), 'processes')
         self.options['processesPath'] = options.get('processesPath', processes_path)
@@ -42,7 +40,7 @@ class Recipe(object):
         self.options['city'] = options.get('city', '')
         self.options['country'] = options.get('country', '')
         self.options['providerSite'] = options.get('providerSite', '')
-        self.options['logLevel'] = options.get('logLevel', 'INFO')
+        self.options['logLevel'] = options.get('logLevel', 'WARN')
 
         self.bin_dir = b_options.get('bin-directory')
         self.package_dir = b_options.get('directory')
@@ -169,7 +167,8 @@ class Recipe(object):
             {'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'sites': 'default',
              'prefix': self.prefix,
-             'port': self.output_port,
+             'hostname': self.options.get('hostname'),
+             'port': self.options.get('output_port')
              })
         if update == True:
             script.update()
@@ -187,9 +186,11 @@ class Recipe(object):
             {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'sites': self.sites,
              'prefix': self.prefix,
-             'port': self.port,
+             'hostname': self.options.get('hostname'),
+             'http_port': self.options.get('http_port'),
+             'https_port': self.options.get('https_port'),
              'user': self.options.get('user'),
-             'group': self.options.get('group'),
+             'group': self.options.get('group')
              })
         if update == True:
             script.update()

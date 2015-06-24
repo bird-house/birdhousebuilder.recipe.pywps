@@ -54,8 +54,14 @@ The recipe supports the following options:
 ``hostname``
    The hostname of the ``PyWPS`` service (nginx). Default: ``localhost``
 
-``port``
-   The port of the ``PyWPS`` service (nginx). Default: ``8091``
+``http_port``
+   The http port of the ``PyWPS`` service (nginx). Default: ``8091``
+
+``https_port``
+   The https port of the ``PyWPS`` service (nginx). Default: ``28091``
+
+``output_port``
+   The http port of the ``PyWPS`` output file service (nginx). Default: ``8090``
 
 ``sites``
    The name of your WPS project (used for config names and folder path).
@@ -68,6 +74,9 @@ The recipe supports the following options:
 
 ``abstract``
    Description of your WPS service.
+
+``logLevel``
+   Logging level for ``PyWPS``. Default: ``WARN``
 
 
 Example usage
@@ -84,7 +93,8 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
   recipe = birdhousebuilder.recipe.pywps
   sites = myproject
   hostname = localhost
-  port = 8091
+  http-port = 8091
+  https-port = 28091
 
   # pywps options
   processesPath = ${buildout:directory}/myproject/processes
