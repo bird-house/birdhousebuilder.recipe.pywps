@@ -56,7 +56,7 @@ class Recipe(object):
         installed += list(self.install_nginx())
         return tuple()
 
-    def install_pywps(self):
+    def install_pywps(self, update=False):
         script = conda.Recipe(
             self.buildout,
             self.name,
@@ -78,7 +78,10 @@ class Recipe(object):
         mypath = os.path.join(self.prefix, 'var', 'cache', 'mako')
         conda.makedirs(mypath)
 
-        return script.install()
+        if update == True:
+            return script.update()
+        else:
+            return script.install()
         
     def install_config(self):
         """
@@ -152,10 +155,9 @@ class Recipe(object):
              'killasgroup': 'true',
              })
         if update == True:
-            script.update()
+            return script.update()
         else:
-            script.install()
-        return tuple()
+            return script.install()
 
     def install_nginx_default(self, update=False):
         """
@@ -171,10 +173,9 @@ class Recipe(object):
              'port': self.options.get('output_port')
              })
         if update == True:
-            script.update()
+            return script.update()
         else:
-            script.install()
-        return tuple()
+            return script.install()
 
     def install_nginx(self, update=False):
         """
@@ -193,13 +194,12 @@ class Recipe(object):
              'group': self.options.get('group')
              })
         if update == True:
-            script.update()
+            return script.update()
         else:
-            script.install()
-        return tuple()
+            return script.install()
         
     def update(self):
-        # self.install_pywps()
+        self.install_pywps(update=True)
         self.install_config()
         self.install_app()
         self.install_gunicorn()
