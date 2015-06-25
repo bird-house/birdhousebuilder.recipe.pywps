@@ -31,6 +31,8 @@ class Recipe(object):
         self.options['https_port'] = options.get('https_port', '28091')
         self.options['output_port'] = options.get('output_port','8090')
         
+        self.options['user'] = options.get('user', '')
+        
         processes_path = os.path.join(b_options.get('directory'), 'processes')
         self.options['processesPath'] = options.get('processesPath', processes_path)
 
@@ -148,7 +150,8 @@ class Recipe(object):
         script = supervisor.Recipe(
             self.buildout,
             self.sites,
-            {'program': self.sites,
+            {'user': self.options.get('user'),
+             'program': self.sites,
              'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
              'directory': os.path.join(self.prefix, 'etc', 'pywps'),
              'stopwaitsecs': '30',
@@ -168,6 +171,7 @@ class Recipe(object):
             self.name,
             {'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'sites': 'default',
+             'user': self.options.get('user'),
              'prefix': self.prefix,
              'hostname': self.options.get('hostname'),
              'port': self.options.get('output_port')
@@ -187,6 +191,7 @@ class Recipe(object):
             {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'sites': self.sites,
              'prefix': self.prefix,
+             'user': self.options.get('user'),
              'hostname': self.options.get('hostname'),
              'http_port': self.options.get('http_port'),
              'https_port': self.options.get('https_port'),

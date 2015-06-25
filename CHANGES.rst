@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.2.6 (2015-06-25)
+==================
+
+* added user option for supervisor and nginx.
+
 0.2.5 (2015-06-24)
 ==================
 
