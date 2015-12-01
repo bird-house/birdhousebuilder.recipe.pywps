@@ -33,7 +33,7 @@ PyWPS wsgi script
 import pywps
 from pywps.Exceptions import *
 
-def app(environ, start_response):
+def application(environ, start_response):
 
     status = '200 OK'
     response_headers = [('Content-type','text/xml')]
@@ -52,7 +52,7 @@ def app(environ, start_response):
 
     # create the WPS object
     try:
-        wps = pywps.Pywps(environ["REQUEST_METHOD"])
+        wps = pywps.Pywps(environ)
         if wps.parseRequest(inputQuery):
             pywps.debug(wps.inputs)
             wps.performRequest()

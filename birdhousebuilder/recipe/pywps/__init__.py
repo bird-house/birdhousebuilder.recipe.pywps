@@ -11,7 +11,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:app -c ${prefix}/etc/pywps/gunicorn.${sites}.py")
+    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/pywps/gunicorn.${sites}.py")
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -62,7 +62,7 @@ class Recipe(object):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pywps gunicorn'})
+            {'pkgs': 'pywps>=3.2.3 gunicorn'})
         
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
