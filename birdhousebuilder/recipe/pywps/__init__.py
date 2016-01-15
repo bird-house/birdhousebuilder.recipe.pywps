@@ -11,7 +11,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/pywps/gunicorn.${sites}.py")
+    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -32,6 +32,12 @@ class Recipe(object):
         self.options['output_port'] = options.get('output_port','8090')
         
         self.options['user'] = options.get('user', '')
+
+        # gunicorn options
+        self.options['workers'] = options.get('workers', '1')
+        self.options['worker_class'] = options.get('worker_class', 'gevent')
+        self.options['timeout'] = options.get('timeout', '30')
+        self.options['loglevel'] = options.get('loglevel', 'info')
         
         processes_path = os.path.join(b_options.get('directory'), 'processes')
         self.options['processesPath'] = options.get('processesPath', processes_path)
@@ -47,22 +53,22 @@ class Recipe(object):
         self.bin_dir = b_options.get('bin-directory')
         self.package_dir = b_options.get('directory')
 
-    def install(self):
+    def install(self, update=False):
         installed = []
-        installed += list(self.install_pywps())
+        installed += list(self.install_pywps(update))
         installed += list(self.install_config())
         installed += list(self.install_app())
         installed += list(self.install_gunicorn())
-        installed += list(self.install_supervisor())
-        installed += list(self.install_nginx_default())
-        installed += list(self.install_nginx())
-        return tuple()
+        installed += list(self.install_supervisor(update))
+        installed += list(self.install_nginx_default(update))
+        installed += list(self.install_nginx(update))
+        return installed
 
     def install_pywps(self, update=False):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pywps>=3.2.3 gunicorn'})
+            {'pkgs': 'pywps>=3.2.3 gunicorn gevent'})
         
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
@@ -111,8 +117,12 @@ class Recipe(object):
             sites=self.sites,
             bin_dir=self.bin_dir,
             package_dir=self.package_dir,
+            workers = self.options['workers'],
+            worker_class = self.options['worker_class'],
+            timeout = self.options['timeout'],
+            loglevel = self.options['loglevel'],
             )
-        output = os.path.join(self.prefix, 'etc', 'pywps', 'gunicorn.'+self.sites+'.py')
+        output = os.path.join(self.prefix, 'etc', 'gunicorn', self.sites+'.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -204,16 +214,8 @@ class Recipe(object):
             return script.install()
         
     def update(self):
-        self.install_pywps(update=True)
-        self.install_config()
-        self.install_app()
-        self.install_gunicorn()
-        self.install_supervisor(update=True)
-        self.install_nginx_default(update=True)
-        self.install_nginx(update=True)
-        
-        return tuple()
-
+        return self.install(update=True)
+    
 def uninstall(name, options):
     pass
 

@@ -1,5 +1,7 @@
 bind = 'unix://${prefix}/var/run/${sites}.socket'
-workers = 3
+workers = ${workers}
+worker_class = '${worker_class}'
+timeout = ${timeout}
 
 def python_path():
     """Generates PYTHONPATH from sys.path"""
@@ -22,5 +24,5 @@ raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg",
 
 debug = True
 errorlog = '-'
-loglevel = 'debug'
+loglevel = '${loglevel}'
 accesslog = '-'
