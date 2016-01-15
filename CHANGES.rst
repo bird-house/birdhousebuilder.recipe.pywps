@@ -1,6 +1,13 @@
 Change History
 **************
 
+0.3.2 (2016-01-15)
+==================
+
+* added gunicorn workers parameter.
+* using gevent worker_class.
+* using gunicorn config folder etc/gunicorn/.
+
 0.3.1 (2016-01-05)
 ==================
 

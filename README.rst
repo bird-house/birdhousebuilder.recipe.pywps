@@ -63,6 +63,9 @@ The recipe supports the following options:
 ``output_port``
    The http port of the ``PyWPS`` output file service (nginx). Default: ``8090``
 
+``workers``
+   The number of gunicorn workers for handling requests. Default: 1
+
 ``sites``
    The name of your WPS project (used for config names and folder path).
 
