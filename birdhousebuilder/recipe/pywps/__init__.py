@@ -9,7 +9,7 @@ from birdhousebuilder.recipe import conda, supervisor, nginx
 
 templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
-templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
+templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
     "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
 
