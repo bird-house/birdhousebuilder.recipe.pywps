@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.3.3 (2016-01-18)
+==================
+
+* renamed gunicorn template.
+* updated pywps.cfg for gunicron keywords template.
+
 0.3.2 (2016-01-15)
 ==================
 
