@@ -27,6 +27,7 @@ class Recipe(object):
         self.options['sites'] = self.sites
         self.options['hostname'] = options.get('hostname', 'localhost')
 
+        # nginx options
         self.options['http_port'] = options.get('http_port', '8091')
         self.options['https_port'] = options.get('https_port', '28091')
         self.options['output_port'] = options.get('output_port','8090')
@@ -68,7 +69,8 @@ class Recipe(object):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pywps>=3.2.3 gunicorn gevent'})
+            {'pkgs': 'pywps>=3.2.3 gunicorn gevent eventlet',
+             'channels': 'birdhouse'})
         
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
         conda.makedirs(mypath)
