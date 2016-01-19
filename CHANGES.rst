@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.3.4 (2016-01-19)
+==================
+
+* cleaned up templates.
+* added eventlet to the conda dependencies.
+
 0.3.3 (2016-01-18)
 ==================
 
