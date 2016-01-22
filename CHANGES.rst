@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.3.7 (2016-01-22)
+==================
+
+* added environment variables PATH and GDAL_DATA to bin/runwps script.
+
 0.3.6 (2016-01-22)
 ==================
 
