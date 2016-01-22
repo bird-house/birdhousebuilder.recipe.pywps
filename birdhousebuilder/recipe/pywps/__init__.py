@@ -12,6 +12,7 @@ templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
     "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
+templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -63,13 +64,14 @@ class Recipe(object):
         installed += list(self.install_supervisor(update))
         installed += list(self.install_nginx_default(update))
         installed += list(self.install_nginx(update))
+        installed += list(self.install_runwps(update))
         return installed
 
     def install_pywps(self, update=False):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pywps>=3.2.4 gunicorn gevent eventlet',
+            {'pkgs': 'pywps>=3.2.5 gunicorn gevent eventlet',
              'channels': 'birdhouse'})
         
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
@@ -214,6 +216,30 @@ class Recipe(object):
             return script.update()
         else:
             return script.install()
+
+    def install_runwps(self, update=False):
+        """
+        install buildout_directory/bin/runwps
+        """
+        result = templ_runwps.render(
+            prefix=self.prefix,
+            sites=self.sites,
+            bin_dir=self.bin_dir,
+            )
+        output = os.path.join(self.bin_dir, 'runwps')
+        conda.makedirs(os.path.dirname(output))
+                
+        try:
+            os.remove(output)
+        except OSError:
+            pass
+
+        with open(output, 'wt') as fp:
+            fp.write(result)
+
+        os.chmod(output, 0o755)
+        
+        return [output]
         
     def update(self):
         return self.install(update=True)
