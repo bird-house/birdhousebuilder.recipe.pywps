@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.3.6 (2016-01-22)
+==================
+
+* generates bin/runwps script to test pywps service.
+
 0.3.5 (2016-01-21)
 ==================
 
