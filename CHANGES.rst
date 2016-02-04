@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.3.8 (2016-02-04)
+==================
+
+* configure pywps logFile in ${prefix}/var/log/pywps/.
+
 0.3.7 (2016-01-22)
 ==================
 
