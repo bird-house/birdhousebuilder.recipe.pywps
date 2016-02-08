@@ -71,7 +71,7 @@ class Recipe(object):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pywps>=3.2.5 gunicorn gevent eventlet',
+            {'pkgs': 'pywps>=3.2.3 gunicorn gevent eventlet',
              'channels': 'birdhouse'})
         
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pywps', 'outputs', self.sites)
