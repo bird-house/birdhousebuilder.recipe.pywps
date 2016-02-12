@@ -10,8 +10,6 @@ Introduction
 ``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to install and configure `PyWPS`_ with `Anaconda`_. `PyWPS`_ is a Python implementation of a `Web Processing Service`_ (WPS). ``PyWPS`` will be deployed as a `Supervisor`_ service and is available on a `Nginx`_ web server. 
 This recipe is used by the `Birdhouse`_ project. 
 
-
-
 .. _`Buildout`: http://buildout.org/
 .. _`Anaconda`: http://continuum.io/
 .. _`Supervisor`: http://supervisord.org/
@@ -81,6 +79,12 @@ The recipe supports the following options:
 ``logLevel``
    Logging level for ``PyWPS``. Default: ``WARN``
 
+``maxoperations``
+   Maximum number of parallel WPS operations. Default: 100
+
+``maxfilesize``
+   Maximal file size accepted in WPS process. Default: 30GB
+ 
 
 Example usage
 =============

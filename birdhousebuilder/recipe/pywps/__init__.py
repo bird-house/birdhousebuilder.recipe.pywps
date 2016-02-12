@@ -51,6 +51,9 @@ class Recipe(object):
         self.options['country'] = options.get('country', '')
         self.options['providerSite'] = options.get('providerSite', '')
         self.options['logLevel'] = options.get('logLevel', 'WARN')
+        self.options['maxoperations'] = options.get('maxoperations', '100')
+        self.options['maxinputparamlength'] = options.get('maxinputparamlength', '2048')
+        self.options['maxfilesize'] = options.get('maxfilesize', '30GB')
 
         self.bin_dir = b_options.get('bin-directory')
         self.package_dir = b_options.get('directory')

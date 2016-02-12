@@ -1,10 +1,15 @@
 Change History
 **************
 
+0.3.10 (2016-02-12)
+===================
+
+* added ``maxoperations`` and ``maxfilesize`` to options. 
+
 0.3.9 (2016-02-08)
 ==================
 
-* update pywps conda dependency.
+* updated pywps conda dependency.
 
 0.3.8 (2016-02-04)
 ==================
