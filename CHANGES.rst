@@ -1,6 +1,13 @@
 Change History
 **************
 
+0.4.0 (2016-03-03)
+==================
+
+* update to pywps 3.2.5.
+* fixed wpsapp.py wsgi script.
+* added missing server/debug parameter to pywps.cfg.
+
 0.3.10 (2016-02-12)
 ===================
 
