@@ -6,12 +6,13 @@ import os
 from mako.template import Template
 
 from birdhousebuilder.recipe import conda, supervisor, nginx
+from birdhousebuilder.recipe.conda import conda_envs
 
 templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
+    "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
 class Recipe(object):
@@ -23,6 +24,8 @@ class Recipe(object):
         
         self.prefix = self.options.get('prefix', conda.prefix())
         self.options['prefix'] = self.prefix
+        self.env = options.get('env', b_options.get('conda-env'))
+        self.env_path = conda_envs(self.prefix).get(self.env, self.prefix)
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
@@ -121,6 +124,7 @@ class Recipe(object):
         """
         result = templ_gunicorn.render(
             prefix=self.prefix,
+            env_path=self.env_path,
             sites=self.sites,
             bin_dir=self.bin_dir,
             package_dir=self.package_dir,
@@ -169,7 +173,7 @@ class Recipe(object):
             self.sites,
             {'user': self.options.get('user'),
              'program': self.sites,
-             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
+             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, sites=self.sites),
              'directory': os.path.join(self.prefix, 'etc', 'pywps'),
              'stopwaitsecs': '30',
              'killasgroup': 'true',
