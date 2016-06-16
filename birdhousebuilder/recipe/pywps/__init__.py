@@ -6,7 +6,7 @@ import os
 from mako.template import Template
 
 from birdhousebuilder.recipe import conda, supervisor, nginx
-from birdhousebuilder.recipe.conda import conda_envs
+from birdhousebuilder.recipe.conda import conda_envs, anaconda_home
 
 templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
@@ -21,11 +21,16 @@ class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
+
+        self.anaconda_home = b_options.get('anaconda-home', anaconda_home())
+        b_options['anaconda-home'] = self.anaconda_home
         
         self.prefix = self.options.get('prefix', conda.prefix())
         self.options['prefix'] = self.prefix
+        
         self.env = options.get('env', b_options.get('conda-env'))
-        self.env_path = conda_envs(self.prefix).get(self.env, self.prefix)
+        self.env_path = conda_envs(self.anaconda_home).get(self.env, self.anaconda_home)
+        self.options['env_path'] = self.env_path
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
@@ -70,7 +75,6 @@ class Recipe(object):
         installed += list(self.install_supervisor(update))
         installed += list(self.install_nginx_default(update))
         installed += list(self.install_nginx(update))
-        installed += list(self.install_runwps(update))
         return installed
 
     def install_pywps(self, update=False):
@@ -223,30 +227,6 @@ class Recipe(object):
             return script.update()
         else:
             return script.install()
-
-    def install_runwps(self, update=False):
-        """
-        install buildout_directory/bin/runwps
-        """
-        result = templ_runwps.render(
-            prefix=self.prefix,
-            sites=self.sites,
-            bin_dir=self.bin_dir,
-            )
-        output = os.path.join(self.bin_dir, 'runwps')
-        conda.makedirs(os.path.dirname(output))
-                
-        try:
-            os.remove(output)
-        except OSError:
-            pass
-
-        with open(output, 'wt') as fp:
-            fp.write(result)
-
-        os.chmod(output, 0o755)
-        
-        return [output]
         
     def update(self):
         return self.install(update=True)
