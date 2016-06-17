@@ -15,8 +15,8 @@ def python_path():
 
 # environment
 raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg", 
-           "PATH=${bin_dir}:${env_path}:bin/usr/bin:/bin:/usr/local/bin",
-           "GDAL_DATA=${prefix}/share/gdal",
+           "PATH=${bin_dir}:${env_path}/bin:/usr/bin:/bin:/usr/local/bin",
+           "GDAL_DATA=${env_path}/share/gdal",
            "PYTHONPATH=%s" % python_path(),
            ]                                                                                                               
 
