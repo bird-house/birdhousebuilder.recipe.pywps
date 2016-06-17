@@ -9,8 +9,6 @@ from birdhousebuilder.recipe import conda, supervisor, nginx
 from birdhousebuilder.recipe.conda import conda_env_path
 
 import logging
-logging.basicConfig(format='%(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
@@ -24,9 +22,13 @@ class Recipe(object):
 
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
+
+        self.logger = logging.getLogger(self.name)
+        
         b_options = buildout['buildout']
 
-        self.prefix = self.options.get('prefix', conda.prefix())
+        self.prefix = b_options.get('birdhouse-home', '/opt/birdhouse')
+        b_options['birdhouse-home'] = self.prefix
         self.options['prefix'] = self.prefix
         
         self.env_path = conda_env_path(buildout, options)
@@ -182,10 +184,7 @@ class Recipe(object):
              'stopwaitsecs': '30',
              'killasgroup': 'true',
              })
-        if update == True:
-            return script.update()
-        else:
-            return script.install()
+        return script.install(update=update)
 
     def install_nginx_default(self, update=False):
         """
@@ -201,10 +200,7 @@ class Recipe(object):
              'hostname': self.options.get('hostname'),
              'port': self.options.get('output_port')
              })
-        if update == True:
-            return script.update()
-        else:
-            return script.install()
+        return script.install(update=update)
 
     def install_nginx(self, update=False):
         """
@@ -223,10 +219,7 @@ class Recipe(object):
              'user': self.options.get('user'),
              'group': self.options.get('group')
              })
-        if update == True:
-            return script.update()
-        else:
-            return script.install()
+        return script.install(update=update)
         
     def update(self):
         return self.install(update=True)
