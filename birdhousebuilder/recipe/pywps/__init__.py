@@ -32,18 +32,14 @@ class Recipe(object):
             self.options['prefix'] = buildout[deployment].get('prefix')
             self.options['etc-prefix'] = buildout[deployment].get('etc-prefix')
             self.options['var-prefix'] = buildout[deployment].get('var-prefix')
-            self.options['etc-directory'] = buildout[deployment].get('etc-directory')
-            self.options['lib-directory'] = buildout[deployment].get('lib-directory')
-            self.options['log-directory'] = buildout[deployment].get('log-directory')
-            self.options['cache-directory'] = buildout[deployment].get('cache-directory')
         else:
-            self.options['prefix'] = os.path.join(buildout['buildout']['parts-directory'], self.name)
+            self.options['prefix'] = os.path.join(buildout['buildout']['directory'])
             self.options['etc-prefix'] = os.path.join(self.options['prefix'], 'etc')
             self.options['var-prefix'] = os.path.join(self.options['prefix'], 'var')
-            self.options['etc-directory'] = os.path.join(self.options['etc-prefix'], self.name)
-            self.options['lib-directory'] = os.path.join(self.options['var-prefix'], 'lib', self.name)
-            self.options['log-directory'] = os.path.join(self.options['var-prefix'], 'log', self.name)
-            self.options['cache-directory'] = os.path.join(self.options['var-prefix'], 'cache', self.name)
+        self.options['etc-directory'] = os.path.join(self.options['etc-prefix'], self.name)
+        self.options['lib-directory'] = os.path.join(self.options['var-prefix'], 'lib', self.name)
+        self.options['log-directory'] = os.path.join(self.options['var-prefix'], 'log', self.name)
+        self.options['cache-directory'] = os.path.join(self.options['var-prefix'], 'cache', self.name)
         self.prefix = self.options['prefix']
         
         self.env_path = conda_env_path(buildout, options)
@@ -102,6 +98,15 @@ class Recipe(object):
              'channels': 'birdhouse'})
 
         # make directories
+        if not os.path.exists(self.options['etc-directory']):
+            os.makedirs(self.options['etc-directory'])
+        if not os.path.exists(self.options['lib-directory']):
+            os.makedirs(self.options['lib-directory'])
+        if not os.path.exists(self.options['cache-directory']):
+            os.makedirs(self.options['cache-directory'])
+        if not os.path.exists(self.options['log-directory']):
+            os.makedirs(self.options['log-directory'])
+        
         output_path = os.path.join(self.options['lib-directory'], 'outputs', self.sites)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
