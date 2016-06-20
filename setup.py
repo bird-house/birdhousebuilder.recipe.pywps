@@ -15,7 +15,8 @@ long_description = (
 
 entry_point = 'birdhousebuilder.recipe.pywps'
 entry_points = {"zc.buildout": [
-                            "default = %s:Recipe" % entry_point,
+                            "default = %s:MetaRecipe" % entry_point,
+                            "PyWPS = %s:Recipe" % entry_point,
                           ],
                 "zc.buildout.uninstall": [
                             "default = %s:uninstall" % entry_point,

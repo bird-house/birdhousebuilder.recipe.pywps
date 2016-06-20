@@ -21,6 +21,35 @@ def make_dirs(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+
+class MetaRecipe(object):
+    def __init__(self, buildout, name, options):
+        def add_section(section_name, values):
+            if section_name in buildout._raw:
+                raise KeyError("already in buildout", section_name)
+            buildout._raw[section_name] = values
+            buildout[section_name] # cause it to be added to the working parts
+
+        deployment = name + '-deployment'
+
+        add_section(deployment,
+                    {
+                        'recipe': 'zc.recipe.deployment',
+                        'name': name,
+                        'prefix': '/home/pingu/birdhouse',
+                        'user': 'pingu',
+                        'etc-user': 'pingu',
+                    })
+        pywps_options = options.copy()
+        pywps_options['recipe'] = 'birdhousebuilder.recipe.pywps:PyWPS'
+        pywps_options['deployment'] = deployment
+        add_section(name + '-pywps', pywps_options)
+        
+    def install(self):
+        pass
+
+    update = install
+
 class Recipe(object):
     """This recipe is used by zc.buildout"""
 
