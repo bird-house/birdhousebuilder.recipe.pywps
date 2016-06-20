@@ -17,6 +17,10 @@ templ_cmd = Template(
     "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
+def make_dirs(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 class Recipe(object):
     """This recipe is used by zc.buildout"""
 
@@ -98,26 +102,19 @@ class Recipe(object):
              'channels': 'birdhouse'})
 
         # make directories
-        if not os.path.exists(self.options['etc-directory']):
-            os.makedirs(self.options['etc-directory'])
-        if not os.path.exists(self.options['lib-directory']):
-            os.makedirs(self.options['lib-directory'])
-        if not os.path.exists(self.options['cache-directory']):
-            os.makedirs(self.options['cache-directory'])
-        if not os.path.exists(self.options['log-directory']):
-            os.makedirs(self.options['log-directory'])
+        make_dirs(self.options['etc-directory'])
+        make_dirs(self.options['lib-directory'])
+        make_dirs(self.options['cache-directory'])
+        make_dirs(self.options['log-directory'])
         
         output_path = os.path.join(self.options['lib-directory'], 'outputs', self.sites)
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
+        make_dirs(output_path)
         
         tmp_path = os.path.join(self.options['var-prefix'], 'tmp')
-        if not os.path.exists(tmp_path):
-            os.makedirs(tmp_path)
+        make_dirs(tmp_path)
 
         mako_path = os.path.join(self.options['var-prefix'], 'cache', 'mako')
-        if not os.path.exists(mako_path):
-            os.makedirs(mako_path)
+        make_dirs(mako_path)
 
         return script.install(update)
         
@@ -148,8 +145,7 @@ class Recipe(object):
             loglevel = self.options['loglevel'],
             )
         conf_path = os.path.join(self.options['etc-prefix'], 'gunicorn', self.sites+'.py')
-        if not os.path.exists(os.path.dirname(conf_path)):
-            os.makedirs(os.path.dirname(conf_path))
+        make_dirs(os.path.dirname(conf_path))
                 
         with open(conf_path, 'wt') as fp:
             fp.write(text)
