@@ -100,22 +100,19 @@ class Recipe(object):
             self.name,
             {'pkgs': 'pywps>=3.2.5 gunicorn gevent eventlet',
              'channels': 'birdhouse'})
+
+        # make directories
+        output_path = os.path.join(self.options['lib-directory'], 'outputs', self.sites)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
         
-        mypath = os.path.join(self.options['lib-directory'], 'outputs', self.sites)
-        conda.makedirs(mypath)
+        tmp_path = os.path.join(self.options['var-prefix'], 'tmp')
+        if not os.path.exists(tmp_path):
+            os.makedirs(tmp_path)
 
-        # cache path
-        mypath = self.options['cache-directory']
-        conda.makedirs(mypath)
-
-        mypath = os.path.join(self.options['var-prefix'], 'tmp')
-        conda.makedirs(mypath)
-
-        mypath = self.options['log-directory']
-        conda.makedirs(mypath)
-
-        mypath = os.path.join(self.options['var-prefix'], 'cache', 'mako')
-        conda.makedirs(mypath)
+        mako_path = os.path.join(self.options['var-prefix'], 'cache', 'mako')
+        if not os.path.exists(mako_path):
+            os.makedirs(mako_path)
 
         return script.install(update)
         
@@ -123,24 +120,18 @@ class Recipe(object):
         """
         install pywps config in etc/pywps
         """
-        result = templ_pywps.render(**self.options)
-        output = os.path.join(self.options['etc-directory'], self.sites + '.cfg')
-        conda.makedirs(os.path.dirname(output))
-                
-        try:
-            os.remove(output)
-        except OSError:
-            pass
+        text = templ_pywps.render(**self.options)
+        conf_path = os.path.join(self.options['etc-directory'], self.sites + '.cfg')
 
-        with open(output, 'wt') as fp:
-            fp.write(result)
-        return [output]
+        with open(conf_path, 'wt') as fp:
+            fp.write(text)
+        return [conf_path]
 
     def install_gunicorn(self):
         """
         install etc/gunicorn.conf.py
         """
-        result = templ_gunicorn.render(
+        text = templ_gunicorn.render(
             prefix=self.prefix,
             env_path=self.env_path,
             sites=self.sites,
@@ -151,36 +142,24 @@ class Recipe(object):
             timeout = self.options['timeout'],
             loglevel = self.options['loglevel'],
             )
-        output = os.path.join(self.options['etc-prefix'], 'gunicorn', self.sites+'.py')
-        conda.makedirs(os.path.dirname(output))
+        conf_path = os.path.join(self.options['etc-prefix'], 'gunicorn', self.sites+'.py')
+        if not os.path.exists(os.path.dirname(conf_path)):
+            os.makedirs(os.path.dirname(conf_path))
                 
-        try:
-            os.remove(output)
-        except OSError:
-            pass
-
-        with open(output, 'wt') as fp:
-            fp.write(result)
-        return [output]
+        with open(conf_path, 'wt') as fp:
+            fp.write(text)
+        return [conf_path]
 
     def install_app(self):
         """
         install etc/wpsapp.py
         """
-        result = templ_app.render(
-            prefix=self.prefix,
-            )
-        output = os.path.join(self.options['etc-directory'], 'wpsapp.py')
-        conda.makedirs(os.path.dirname(output))
-                
-        try:
-            os.remove(output)
-        except OSError:
-            pass
+        text = templ_app.render(prefix=self.prefix)
+        conf_path = os.path.join(self.options['etc-directory'], 'wpsapp.py')
 
-        with open(output, 'wt') as fp:
-            fp.write(result)
-        return [output]
+        with open(conf_path, 'wt') as fp:
+            fp.write(text)
+        return [conf_path]
 
     def install_supervisor(self, update=False):
         """
