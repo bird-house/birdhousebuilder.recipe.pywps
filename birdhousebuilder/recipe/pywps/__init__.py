@@ -30,23 +30,30 @@ class MetaRecipe(object):
             buildout._raw[section_name] = values
             buildout[section_name] # cause it to be added to the working parts
 
+        deployment = options.get('deployment')
+        options['prefix'] = buildout[deployment].get('prefix')
+        options['user'] = buildout[deployment].get('user')
+
         deployment = name + '-deployment'
 
+        # deployment
         add_section(deployment,
                     {
                         'recipe': 'zc.recipe.deployment',
                         'name': name,
-                        'prefix': '/home/pingu/birdhouse',
-                        'user': 'pingu',
-                        'etc-user': 'pingu',
+                        'prefix': options['prefix'],
+                        'user': options['user'],
+                        'etc-user': options['user'],
                     })
+        # pywps
         pywps_options = options.copy()
         pywps_options['recipe'] = 'birdhousebuilder.recipe.pywps:PyWPS'
         pywps_options['deployment'] = deployment
         add_section(name + '-pywps', pywps_options)
-        
+
+     
     def install(self):
-        pass
+        return tuple()
 
     update = install
 
