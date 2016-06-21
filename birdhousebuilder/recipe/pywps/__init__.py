@@ -181,10 +181,10 @@ class Recipe(object):
         script = nginx.Recipe(
             self.buildout,
             'pywps',
-            {'deployment': self.options.get('deployment'),
+            {'prefix': self.options['prefix'],
+             'user': self.options['user'],
+             'name': 'default',
              'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
-             'sites': 'default',
-             'user': self.options.get('user'),
              'hostname': self.options.get('hostname'),
              'port': self.options.get('output_port')
              })
@@ -197,14 +197,13 @@ class Recipe(object):
         script = nginx.Recipe(
             self.buildout,
             self.name,
-            {'deployment': self.options.get('deployment'),
+            {'prefix': self.options['prefix'],
+             'user': self.options['user'],
+             'name': self.name,
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
-             'sites': self.name,
-             'user': self.options.get('user'),
              'hostname': self.options.get('hostname'),
              'http_port': self.options.get('http_port'),
              'https_port': self.options.get('https_port'),
-             'user': self.options.get('user'),
              'group': self.options.get('group')
              })
         return script.install(update=update)
