@@ -34,6 +34,8 @@ class Recipe(object):
         
         b_options = buildout['buildout']
 
+        self.logger.debug("pywps options = %s", self.options)
+
         deployment = zc.recipe.deployment.Install(buildout, "pywps", {
                                                 'prefix': self.options['prefix'],
                                                 'user': self.options['user'],
