@@ -14,7 +14,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${sites}.py")
+    "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
 def make_dirs(path):
@@ -30,17 +30,17 @@ class MetaRecipe(object):
             buildout._raw[section_name] = values
             buildout[section_name] # cause it to be added to the working parts
 
-        deployment = options.get('deployment')
-        options['prefix'] = buildout[deployment].get('prefix')
-        options['user'] = buildout[deployment].get('user')
-
-        deployment = name + '-deployment'
+        # section can be overriden by option
+        name = options.get('name', name)
+        options['name'] = name
+        
+        deployment = name + '-pywps-deployment'
 
         # deployment
         add_section(deployment,
                     {
                         'recipe': 'zc.recipe.deployment',
-                        'name': name,
+                        'name': 'pywps',
                         'prefix': options['prefix'],
                         'user': options['user'],
                         'etc-user': options['user'],
@@ -49,6 +49,7 @@ class MetaRecipe(object):
         pywps_options = options.copy()
         pywps_options['recipe'] = 'birdhousebuilder.recipe.pywps:PyWPS'
         pywps_options['deployment'] = deployment
+        del pywps_options['user']
         add_section(name + '-pywps', pywps_options)
 
      
@@ -63,6 +64,9 @@ class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
 
+        self.name = options.get('name', name)
+        self.options['name'] = self.name
+
         self.logger = logging.getLogger(self.name)
         
         b_options = buildout['buildout']
@@ -76,17 +80,15 @@ class Recipe(object):
             self.options['prefix'] = os.path.join(buildout['buildout']['directory'])
             self.options['etc-prefix'] = os.path.join(self.options['prefix'], 'etc')
             self.options['var-prefix'] = os.path.join(self.options['prefix'], 'var')
-        self.options['etc-directory'] = os.path.join(self.options['etc-prefix'], self.name)
-        self.options['lib-directory'] = os.path.join(self.options['var-prefix'], 'lib', self.name)
-        self.options['log-directory'] = os.path.join(self.options['var-prefix'], 'log', self.name)
-        self.options['cache-directory'] = os.path.join(self.options['var-prefix'], 'cache', self.name)
+        self.options['etc-directory'] = os.path.join(self.options['etc-prefix'], 'pywps')
+        self.options['lib-directory'] = os.path.join(self.options['var-prefix'], 'lib', 'pywps')
+        self.options['log-directory'] = os.path.join(self.options['var-prefix'], 'log', 'pywps')
+        self.options['cache-directory'] = os.path.join(self.options['var-prefix'], 'cache', 'pywps')
         self.prefix = self.options['prefix']
         
         self.env_path = conda_env_path(buildout, options)
         self.options['env_path'] = self.env_path
         
-        self.sites = options.get('sites', self.name)
-        self.options['sites'] = self.sites
         self.options['hostname'] = options.get('hostname', 'localhost')
 
         # nginx options
@@ -137,13 +139,8 @@ class Recipe(object):
             {'pkgs': 'pywps>=3.2.5 gunicorn gevent eventlet',
              'channels': 'birdhouse'})
 
-        # make directories
-        make_dirs(self.options['etc-directory'])
-        make_dirs(self.options['lib-directory'])
-        make_dirs(self.options['cache-directory'])
-        make_dirs(self.options['log-directory'])
-        
-        output_path = os.path.join(self.options['lib-directory'], 'outputs', self.sites)
+        # make dirs
+        output_path = os.path.join(self.options['lib-directory'], 'outputs', self.name)
         make_dirs(output_path)
         
         tmp_path = os.path.join(self.options['var-prefix'], 'tmp')
@@ -159,7 +156,7 @@ class Recipe(object):
         install pywps config in etc/pywps
         """
         text = templ_pywps.render(**self.options)
-        conf_path = os.path.join(self.options['etc-directory'], self.sites + '.cfg')
+        conf_path = os.path.join(self.options['etc-directory'], self.name + '.cfg')
 
         with open(conf_path, 'wt') as fp:
             fp.write(text)
@@ -172,7 +169,7 @@ class Recipe(object):
         text = templ_gunicorn.render(
             prefix=self.prefix,
             env_path=self.env_path,
-            sites=self.sites,
+            name=self.name,
             bin_dir=self.bin_dir,
             package_dir=self.package_dir,
             workers = self.options['workers'],
@@ -180,7 +177,7 @@ class Recipe(object):
             timeout = self.options['timeout'],
             loglevel = self.options['loglevel'],
             )
-        conf_path = os.path.join(self.options['etc-prefix'], 'gunicorn', self.sites+'.py')
+        conf_path = os.path.join(self.options['etc-prefix'], 'gunicorn', self.name+'.py')
         make_dirs(os.path.dirname(conf_path))
                 
         with open(conf_path, 'wt') as fp:
@@ -204,11 +201,11 @@ class Recipe(object):
         """
         script = supervisor.Recipe(
             self.buildout,
-            self.sites,
+            self.name,
             {'deployment': self.options.get('deployment'),
              'user': self.options.get('user'),
-             'program': self.sites,
-             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, sites=self.sites),
+             'program': self.name,
+             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, name=self.name),
              'directory': self.options['etc-directory'],
              'stopwaitsecs': '30',
              'killasgroup': 'true',
@@ -221,7 +218,7 @@ class Recipe(object):
         """
         script = nginx.Recipe(
             self.buildout,
-            self.name,
+            'pywps',
             {'deployment': self.options.get('deployment'),
              'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'sites': 'default',
@@ -240,7 +237,7 @@ class Recipe(object):
             self.name,
             {'deployment': self.options.get('deployment'),
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
-             'sites': self.sites,
+             'sites': self.name,
              'user': self.options.get('user'),
              'hostname': self.options.get('hostname'),
              'http_port': self.options.get('http_port'),

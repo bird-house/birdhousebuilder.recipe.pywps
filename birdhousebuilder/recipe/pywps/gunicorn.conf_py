@@ -1,4 +1,4 @@
-bind = 'unix://${prefix}/var/run/${sites}.socket'
+bind = 'unix://${prefix}/var/run/${name}.socket'
 workers = ${workers}
 worker_class = '${worker_class}'
 timeout = ${timeout}
@@ -14,7 +14,7 @@ def python_path():
     return ':'.join(ppath)
 
 # environment
-raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${sites}.cfg", 
+raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${name}.cfg", 
            "PATH=${bin_dir}:${env_path}/bin:/usr/bin:/bin:/usr/local/bin",
            "GDAL_DATA=${env_path}/share/gdal",
            "PYTHONPATH=%s" % python_path(),
