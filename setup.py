@@ -15,8 +15,7 @@ long_description = (
 
 entry_point = 'birdhousebuilder.recipe.pywps'
 entry_points = {"zc.buildout": [
-                            "default = %s:MetaRecipe" % entry_point,
-                            "PyWPS = %s:Recipe" % entry_point,
+                            "default = %s:Recipe" % entry_point,
                           ],
                 "zc.buildout.uninstall": [
                             "default = %s:uninstall" % entry_point,
@@ -48,10 +47,11 @@ setup(name='birdhousebuilder.recipe.pywps',
       install_requires=['setuptools',
                         'zc.buildout',
                         # -*- Extra requirements: -*-
-            'Mako',
-            'birdhousebuilder.recipe.conda',
-            'birdhousebuilder.recipe.supervisor',
-            'birdhousebuilder.recipe.nginx',
+                        'Mako',
+                        'birdhousebuilder.recipe.conda',
+                        'birdhousebuilder.recipe.supervisor',
+                        'birdhousebuilder.recipe.nginx',
+                        'zc.recipe.deployment',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),

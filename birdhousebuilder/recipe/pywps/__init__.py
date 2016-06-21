@@ -5,8 +5,8 @@
 import os
 from mako.template import Template
 
+import zc.recipe.deployment
 from birdhousebuilder.recipe import conda, supervisor, nginx
-from birdhousebuilder.recipe.conda import conda_env_path
 
 import logging
 
@@ -21,43 +21,6 @@ def make_dirs(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-
-class MetaRecipe(object):
-    def __init__(self, buildout, name, options):
-        def add_section(section_name, values):
-            if section_name in buildout._raw:
-                raise KeyError("already in buildout", section_name)
-            buildout._raw[section_name] = values
-            buildout[section_name] # cause it to be added to the working parts
-
-        # section can be overriden by option
-        name = options.get('name', name)
-        options['name'] = name
-        
-        deployment = name + '-pywps-deployment'
-
-        # deployment
-        add_section(deployment,
-                    {
-                        'recipe': 'zc.recipe.deployment',
-                        'name': 'pywps',
-                        'prefix': options['prefix'],
-                        'user': options['user'],
-                        'etc-user': options['user'],
-                    })
-        # pywps
-        pywps_options = options.copy()
-        pywps_options['recipe'] = 'birdhousebuilder.recipe.pywps:PyWPS'
-        pywps_options['deployment'] = deployment
-        del pywps_options['user']
-        add_section(name + '-pywps', pywps_options)
-
-     
-    def install(self):
-        return tuple()
-
-    update = install
-
 class Recipe(object):
     """This recipe is used by zc.buildout"""
 
@@ -71,22 +34,21 @@ class Recipe(object):
         
         b_options = buildout['buildout']
 
-        deployment = self.deployment = options.get('deployment')
-        if deployment:
-            self.options['prefix'] = buildout[deployment].get('prefix')
-            self.options['etc-prefix'] = buildout[deployment].get('etc-prefix')
-            self.options['var-prefix'] = buildout[deployment].get('var-prefix')
-        else:
-            self.options['prefix'] = os.path.join(buildout['buildout']['directory'])
-            self.options['etc-prefix'] = os.path.join(self.options['prefix'], 'etc')
-            self.options['var-prefix'] = os.path.join(self.options['prefix'], 'var')
-        self.options['etc-directory'] = os.path.join(self.options['etc-prefix'], 'pywps')
-        self.options['lib-directory'] = os.path.join(self.options['var-prefix'], 'lib', 'pywps')
-        self.options['log-directory'] = os.path.join(self.options['var-prefix'], 'log', 'pywps')
-        self.options['cache-directory'] = os.path.join(self.options['var-prefix'], 'cache', 'pywps')
+        deployment = zc.recipe.deployment.Install(buildout, "pywps", {
+                                                'prefix': self.options['prefix'],
+                                                'user': self.options['user'],
+                                                'etc-user': self.options['user']})
+        deployment.install()
+
+        self.options['etc-prefix'] = deployment.options['etc-prefix']
+        self.options['var-prefix'] = deployment.options['var-prefix']
+        self.options['etc-directory'] = deployment.options['etc-directory']
+        self.options['lib-directory'] = deployment.options['lib-directory']
+        self.options['log-directory'] = deployment.options['log-directory']
+        self.options['cache-directory'] = deployment.options['cache-directory']
         self.prefix = self.options['prefix']
         
-        self.env_path = conda_env_path(buildout, options)
+        self.env_path = conda.conda_env_path(buildout, options)
         self.options['env_path'] = self.env_path
         
         self.options['hostname'] = options.get('hostname', 'localhost')
@@ -202,7 +164,7 @@ class Recipe(object):
         script = supervisor.Recipe(
             self.buildout,
             self.name,
-            {'deployment': self.options.get('deployment'),
+            {'prefix': self.options.get('prefix'),
              'user': self.options.get('user'),
              'program': self.name,
              'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, name=self.name),
