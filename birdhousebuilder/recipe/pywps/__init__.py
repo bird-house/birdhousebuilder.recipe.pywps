@@ -49,10 +49,12 @@ class Recipe(object):
         self.prefix = self.options['prefix']
 
         # conda environment
+        self.options['env'] = self.options.get('env', '')
         self.options['pkgs'] = self.options.get('pkgs', 'pywps>=3.2.5 gunicorn gevent eventlet')
         self.options['channels'] = self.options.get('channels', 'defaults birdhouse')
         
         self.conda = birdhousebuilder.recipe.conda.Recipe(self.buildout, self.name, {
+            'env': self.options['env'],
             'pkgs': self.options['pkgs'],
             'channels': self.options['channels']})
         self.env_path = self.conda.options['env-path']
