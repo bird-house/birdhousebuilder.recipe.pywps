@@ -49,23 +49,24 @@ class Recipe(object):
         self.prefix = self.options['prefix']
 
         # conda environment
+        self.options['pkgs'] = self.options.get('pkgs', 'pywps>=3.2.5 gunicorn gevent eventlet')
+        self.options['channels'] = self.options.get('channels', 'defaults birdhouse')
+        
         self.conda = birdhousebuilder.recipe.conda.Recipe(self.buildout, self.name, {
-            'pkgs': 'pywps>=3.2.5 gunicorn gevent eventlet',
-            'channels': 'birdhouse'})
+            'pkgs': self.options['pkgs'],
+            'channels': self.options['channels']})
         self.env_path = self.conda.options['env-path']
         self.options['env-path'] = self.options['env_path'] = self.env_path
 
         # nginx options
-        self.options['hostname'] = options.get('hostname', 'localhost')
-        self.options['http_port'] = options.get('http_port', '8091')
-        self.options['https_port'] = options.get('https_port', '28091')
-        self.options['output_port'] = options.get('output_port','8090')
+        self.options['hostname'] = self.options.get('hostname', 'localhost')
+        self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
+        self.options['https-port'] = self.options['https_port'] =self.options.get('https-port', '28091')
+        self.options['output-port'] = self.options['output_port'] = self.options.get('output-port','8090')
         
-        self.options['user'] = options.get('user', '')
-
         # gunicorn options
         self.options['workers'] = options.get('workers', '1')
-        self.options['worker_class'] = options.get('worker_class', 'gevent')
+        self.options['worker-class'] = options.get('worker-class', 'gevent')
         self.options['timeout'] = options.get('timeout', '30')
         self.options['loglevel'] = options.get('loglevel', 'info')
         
@@ -125,13 +126,13 @@ class Recipe(object):
         install etc/gunicorn.conf.py
         """
         text = templ_gunicorn.render(
+            name=self.name,
             prefix=self.prefix,
             env_path=self.env_path,
-            name=self.name,
             bin_dir=self.bin_dir,
             package_dir=self.package_dir,
             workers = self.options['workers'],
-            worker_class = self.options['worker_class'],
+            worker_class = self.options['worker-class'],
             timeout = self.options['timeout'],
             loglevel = self.options['loglevel'],
             )
@@ -182,7 +183,7 @@ class Recipe(object):
              'name': 'default',
              'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'hostname': self.options.get('hostname'),
-             'port': self.options.get('output_port')
+             'port': self.options.get('output-port')
              })
         return script.install(update=update)
 
@@ -193,14 +194,13 @@ class Recipe(object):
         script = nginx.Recipe(
             self.buildout,
             self.name,
-            {'prefix': self.options['prefix'],
+            {'name': self.name,
+             'prefix': self.options['prefix'],
              'user': self.options['user'],
-             'name': self.name,
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'hostname': self.options.get('hostname'),
-             'http_port': self.options.get('http_port'),
-             'https_port': self.options.get('https_port'),
-             'group': self.options.get('group')
+             'http_port': self.options['http-port'],
+             'https_port': self.options['https-port'],
              })
         return script.install(update=update)
         
