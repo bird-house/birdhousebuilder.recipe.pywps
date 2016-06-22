@@ -179,7 +179,7 @@ class Recipe(object):
         """
         script = nginx.Recipe(
             self.buildout,
-            'pywps',
+            'default',
             {'prefix': self.options['prefix'],
              'user': self.options['user'],
              'name': 'default',
