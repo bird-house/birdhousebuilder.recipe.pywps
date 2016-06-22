@@ -13,5 +13,5 @@ install:
  - buildout bootstrap
  - ./bin/buildout
 script:
- - ./bin/test -m birdhousebuilder.recipe.pywps
+ - ./bin/test -vvv --ndiff
 
