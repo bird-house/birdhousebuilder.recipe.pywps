@@ -2,7 +2,9 @@
 birdhousebuilder.recipe.pywps
 *****************************
 
-.. contents::
+.. image:: https://travis-ci.org/bird-house/birdhousebuilder.recipe.pywps.svg?branch=master
+   :target: https://travis-ci.org/bird-house/birdhousebuilder.recipe.pywps
+   :alt: Travis Build
 
 Introduction
 ************
@@ -49,23 +51,23 @@ The recipe supports the following options:
    2. ``$ANACONDA_HOME``
    3. ``$HOME/anaconda``
 
+``name``
+   The name of your WPS project (used for config names and folder path).
+
 ``hostname``
    The hostname of the ``PyWPS`` service (nginx). Default: ``localhost``
 
-``http_port``
+``http-port``
    The http port of the ``PyWPS`` service (nginx). Default: ``8091``
 
-``https_port``
+``https-port``
    The https port of the ``PyWPS`` service (nginx). Default: ``28091``
 
-``output_port``
+``output-port``
    The http port of the ``PyWPS`` output file service (nginx). Default: ``8090``
 
 ``workers``
    The number of gunicorn workers for handling requests. Default: 1
-
-``sites``
-   The name of your WPS project (used for config names and folder path).
 
 ``processesPath``
    Path the ``PyWPS`` processes.
