@@ -21,10 +21,10 @@ templ_cmd = Template(
     "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
-def make_dirs(path, user):
+def make_dirs(name, user):
     etc_uid, etc_gid = pwd.getpwnam(user)[2:4]
     created = []
-    make_dir(path, etc_uid, etc_gid, 0o755, created)
+    make_dir(name, etc_uid, etc_gid, 0o755, created)
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
