@@ -3,10 +3,12 @@
 """Recipe pywps"""
 
 import os
+import pwd
 from mako.template import Template
 
 import zc.recipe.deployment
 from zc.recipe.deployment import Configuration
+from zc.recipe.deployment import make_dir
 import birdhousebuilder.recipe.conda
 from birdhousebuilder.recipe import supervisor, nginx
 
@@ -19,9 +21,10 @@ templ_cmd = Template(
     "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
-def make_dirs(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+def make_dirs(path, user):
+    etc_uid, etc_gid = pwd.getpwnam(user)[2:4]
+    created = []
+    make_dir(path, etc_uid, etc_gid, 0o755, created)
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -101,13 +104,13 @@ class Recipe(object):
 
         # make dirs
         output_path = os.path.join(self.options['lib-directory'], 'outputs', self.name)
-        make_dirs(output_path)
+        make_dirs(output_path, self.options['user'])
         
         tmp_path = os.path.join(self.options['var-prefix'], 'tmp')
-        make_dirs(tmp_path)
+        make_dirs(tmp_path, self.options['user'])
 
         mako_path = os.path.join(self.options['var-prefix'], 'cache', 'mako')
-        make_dirs(mako_path)
+        make_dirs(mako_path, self.options['user'])
 
     def install(self, update=False):
         installed = []
