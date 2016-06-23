@@ -6,6 +6,7 @@ import os
 from mako.template import Template
 
 import zc.recipe.deployment
+from zc.recipe.deployment import Configuration
 import birdhousebuilder.recipe.conda
 from birdhousebuilder.recipe import supervisor, nginx
 
@@ -35,11 +36,20 @@ class Recipe(object):
         self.logger = logging.getLogger(self.name)
         
         # deployment layout
-        self.deployment = zc.recipe.deployment.Install(buildout, "pywps", {
-                                                'prefix': self.options['prefix'],
-                                                'user': self.options['user'],
-                                                'etc-user': self.options['user']})
-
+        def add_section(section_name, options):
+            if section_name in buildout._raw:
+                raise KeyError("already in buildout", section_name)
+            buildout._raw[section_name] = options
+            buildout[section_name] # cause it to be added to the working parts
+            
+        self.deployment_name = self.name + "-pywps-deployment"
+        self.deployment = zc.recipe.deployment.Install(buildout, self.deployment_name, {
+            'name': "pywps",
+            'prefix': self.options['prefix'],
+            'user': self.options['user'],
+            'etc-user': self.options['user']})
+        add_section(self.deployment_name, self.deployment.options)
+        
         self.options['etc-prefix'] = self.deployment.options['etc-prefix']
         self.options['var-prefix'] = self.deployment.options['var-prefix']
         self.options['etc-directory'] = self.deployment.options['etc-directory']
@@ -114,18 +124,17 @@ class Recipe(object):
 
     def install_config(self):
         """
-        install pywps config in etc/pywps
+        install pywps config in etc/pywps/
         """
         text = templ_pywps.render(**self.options)
-        conf_path = os.path.join(self.options['etc-directory'], self.name + '.cfg')
-
-        with open(conf_path, 'wt') as fp:
-            fp.write(text)
-        return [conf_path]
+        config = Configuration(self.buildout, self.name + '.cfg', {
+            'deployment': self.deployment_name,
+            'text': text})
+        return [config.install()]
 
     def install_gunicorn(self):
         """
-        install etc/gunicorn.conf.py
+        install gunicorn config in etc/gunicorn/
         """
         text = templ_gunicorn.render(
             name=self.name,
@@ -138,23 +147,22 @@ class Recipe(object):
             timeout = self.options['timeout'],
             loglevel = self.options['loglevel'],
             )
-        conf_path = os.path.join(self.options['etc-prefix'], 'gunicorn', self.name+'.py')
-        make_dirs(os.path.dirname(conf_path))
-                
-        with open(conf_path, 'wt') as fp:
-            fp.write(text)
-        return [conf_path]
+        text = templ_app.render(prefix=self.prefix)
+        config = Configuration(self.buildout, self.name+'.py', {
+            'deployment': self.deployment_name,
+            'directory': os.path.join(self.options['etc-prefix'], 'gunicorn'),
+            'text': text})
+        return [config.install()]
 
     def install_app(self):
         """
-        install etc/wpsapp.py
+        install etc/pywps/wpsapp.py
         """
         text = templ_app.render(prefix=self.prefix)
-        conf_path = os.path.join(self.options['etc-directory'], 'wpsapp.py')
-
-        with open(conf_path, 'wt') as fp:
-            fp.write(text)
-        return [conf_path]
+        config = Configuration(self.buildout, 'wpsapp.py', {
+            'deployment': self.deployment_name,
+            'text': text})
+        return [config.install()]
 
     def install_supervisor(self, update=False):
         """
