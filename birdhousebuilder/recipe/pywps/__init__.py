@@ -167,7 +167,6 @@ class Recipe(object):
             timeout = self.options['timeout'],
             loglevel = self.options['loglevel'],
             )
-        text = templ_app.render(prefix=self.prefix)
         config = Configuration(self.buildout, self.name+'.py', {
             'deployment': self.deployment_name,
             'directory': os.path.join(self.options['etc-prefix'], 'gunicorn'),
