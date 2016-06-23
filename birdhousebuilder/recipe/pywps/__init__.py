@@ -37,6 +37,8 @@ class Recipe(object):
         self.options['name'] = self.name
 
         self.logger = logging.getLogger(self.name)
+
+        
         
         # deployment layout
         def add_section(section_name, options):
@@ -44,13 +46,28 @@ class Recipe(object):
                 raise KeyError("already in buildout", section_name)
             buildout._raw[section_name] = options
             buildout[section_name] # cause it to be added to the working parts
+
+        self.prefix = self.options.get('prefix', '')
+        if not self.prefix:
+            self.prefix = b_options['parts-directory']
+        self.options['prefix'] = self.prefix
+            
+        user = self.options.get('user', '')
+        if not user:
+            user = os.environ['USER']
+        self.options['user'] = user
+
+        etc_user = self.options.get('etc-user', '')
+        if not etc_user:
+            etc_user = user
+        self.options['etc-user'] = etc_user
             
         self.deployment_name = self.name + "-pywps-deployment"
         self.deployment = zc.recipe.deployment.Install(buildout, self.deployment_name, {
             'name': "pywps",
             'prefix': self.options['prefix'],
             'user': self.options['user'],
-            'etc-user': self.options['user']})
+            'etc-user': self.options['etc-user']})
         add_section(self.deployment_name, self.deployment.options)
         
         self.options['etc-prefix'] = self.deployment.options['etc-prefix']
@@ -176,6 +193,7 @@ class Recipe(object):
             self.name,
             {'prefix': self.options.get('prefix'),
              'user': self.options.get('user'),
+             'etc-user': self.options.get('etc-user'),
              'program': self.name,
              'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, name=self.name),
              'directory': self.options['etc-directory'],
@@ -193,6 +211,7 @@ class Recipe(object):
             'default',
             {'prefix': self.options['prefix'],
              'user': self.options['user'],
+             'etc-user': self.options.get('etc-user'),
              'name': 'default',
              'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
              'hostname': self.options.get('hostname'),
@@ -210,6 +229,7 @@ class Recipe(object):
             {'name': self.name,
              'prefix': self.options['prefix'],
              'user': self.options['user'],
+             'etc-user': self.options.get('etc-user'),
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'hostname': self.options.get('hostname'),
              'http_port': self.options['http-port'],
