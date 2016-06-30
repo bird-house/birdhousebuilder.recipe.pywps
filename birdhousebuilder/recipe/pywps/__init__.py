@@ -14,7 +14,7 @@ from birdhousebuilder.recipe import supervisor, nginx
 
 import logging
 
-templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
+templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
@@ -71,10 +71,10 @@ class Recipe(object):
         self.options['etc-prefix'] = self.deployment.options['etc-prefix']
         self.options['var-prefix'] = self.options['var_prefix'] = self.deployment.options['var-prefix']
         self.options['etc-directory'] = self.deployment.options['etc-directory']
-        self.options['lib-directory'] = self.deployment.options['lib-directory']
-        self.options['log-directory'] = self.deployment.options['log-directory']
+        self.options['lib-directory'] = self.options['lib_directory'] = self.deployment.options['lib-directory']
+        self.options['log-directory'] = self.options['log_directory'] = self.deployment.options['log-directory']
         self.options['run-directory'] = self.options['run_directory'] = self.deployment.options['run-directory']
-        self.options['cache-directory'] = self.deployment.options['cache-directory']
+        self.options['cache-directory'] = self.options['cache_directory'] = self.deployment.options['cache-directory']
         self.prefix = self.options['prefix']
 
         # conda environment
@@ -121,12 +121,9 @@ class Recipe(object):
         output_path = os.path.join(self.options['lib-directory'], 'outputs', self.name)
         make_dirs(output_path, self.options['user'])
         
-        tmp_path = os.path.join(self.options['var-prefix'], 'tmp')
+        tmp_path = os.path.join(self.options['lib-directory'], 'tmp', self.name)
         make_dirs(tmp_path, self.options['user'])
-
-        mako_path = os.path.join(self.options['var-prefix'], 'cache', 'mako')
-        make_dirs(mako_path, self.options['user'])
-
+        
     def install(self, update=False):
         installed = []
         if not update:
@@ -138,13 +135,17 @@ class Recipe(object):
         installed += list(self.install_supervisor(update))
         installed += list(self.install_nginx_default(update))
         installed += list(self.install_nginx(update))
+
+        # fix permissions for var/run
+        os.chmod(os.path.join(self.options['var-prefix'], 'run'), 0o755)
+        
         return installed
 
     def install_config(self):
         """
         install pywps config in etc/pywps/
         """
-        text = templ_pywps.render(**self.options)
+        text = templ_pywps_cfg.render(**self.options)
         config = Configuration(self.buildout, self.name + '.cfg', {
             'deployment': self.deployment_name,
             'text': text})
