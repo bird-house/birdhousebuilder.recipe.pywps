@@ -1,4 +1,4 @@
-bind = 'unix://${prefix}/var/run/${name}.socket'
+bind = 'unix://${var_prefix}/run/pywps/${name}.socket'
 workers = ${workers}
 worker_class = '${worker_class}'
 timeout = ${timeout}
@@ -6,16 +6,16 @@ timeout = ${timeout}
 def python_path():
     """Generates PYTHONPATH from sys.path"""
     import sys
-    ppath = ['${package_dir}']
+    ppath = ['${directory}']
     for path in sys.path:
-        if '${package_dir}/eggs/' in path:
+        if '${directory}/eggs/' in path:
             # add buildout eggs
             ppath.append(path)
     return ':'.join(ppath)
 
 # environment
 raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${name}.cfg", 
-           "PATH=${bin_dir}:${conda_prefix}/bin:/usr/bin:/bin:/usr/local/bin",
+           "PATH=${bin_directory}:${conda_prefix}/bin:/usr/bin:/bin:/usr/local/bin",
            "GDAL_DATA=${conda_prefix}/share/gdal",
            "PYTHONPATH=%s" % python_path(),
            ]                                                                                                               

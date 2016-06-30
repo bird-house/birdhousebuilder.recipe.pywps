@@ -18,7 +18,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${conda_prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
+    "${bin_directory}/python ${conda_prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
 def make_dirs(name, user):
@@ -37,8 +37,6 @@ class Recipe(object):
         self.options['name'] = self.name
 
         self.logger = logging.getLogger(self.name)
-
-        
         
         # deployment layout
         def add_section(section_name, options):
@@ -71,10 +69,11 @@ class Recipe(object):
         add_section(self.deployment_name, self.deployment.options)
         
         self.options['etc-prefix'] = self.deployment.options['etc-prefix']
-        self.options['var-prefix'] = self.deployment.options['var-prefix']
+        self.options['var-prefix'] = self.options['var_prefix'] = self.deployment.options['var-prefix']
         self.options['etc-directory'] = self.deployment.options['etc-directory']
         self.options['lib-directory'] = self.deployment.options['lib-directory']
         self.options['log-directory'] = self.deployment.options['log-directory']
+        self.options['run-directory'] = self.options['run_directory'] = self.deployment.options['run-directory']
         self.options['cache-directory'] = self.deployment.options['cache-directory']
         self.prefix = self.options['prefix']
 
@@ -97,7 +96,7 @@ class Recipe(object):
         
         # gunicorn options
         self.options['workers'] = options.get('workers', '1')
-        self.options['worker-class'] = options.get('worker-class', 'gevent')
+        self.options['worker-class'] = self.options['worker_class']  =options.get('worker-class', 'gevent')
         self.options['timeout'] = options.get('timeout', '30')
         self.options['loglevel'] = options.get('loglevel', 'info')
         
@@ -115,8 +114,8 @@ class Recipe(object):
         self.options['maxinputparamlength'] = options.get('maxinputparamlength', '2048')
         self.options['maxfilesize'] = options.get('maxfilesize', '30GB')
 
-        self.bin_dir = b_options.get('bin-directory')
-        self.package_dir = b_options.get('directory')
+        self.options['bin-directory'] = self.options['bin_directory'] = b_options.get('bin-directory')
+        self.options['directory'] = b_options.get('directory')
 
         # make dirs
         output_path = os.path.join(self.options['lib-directory'], 'outputs', self.name)
@@ -155,17 +154,7 @@ class Recipe(object):
         """
         install gunicorn config in etc/gunicorn/
         """
-        text = templ_gunicorn.render(
-            name=self.name,
-            prefix=self.prefix,
-            conda_prefix=self.options['conda-prefix'],
-            bin_dir=self.bin_dir,
-            package_dir=self.package_dir,
-            workers = self.options['workers'],
-            worker_class = self.options['worker-class'],
-            timeout = self.options['timeout'],
-            loglevel = self.options['loglevel'],
-            )
+        text = templ_gunicorn.render(**self.options)
         config = Configuration(self.buildout, self.name+'.py', {
             'deployment': self.deployment_name,
             'directory': os.path.join(self.options['etc-prefix'], 'gunicorn'),
@@ -193,7 +182,7 @@ class Recipe(object):
              'user': self.options.get('user'),
              'etc-user': self.options.get('etc-user'),
              'program': self.name,
-             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, conda_prefix=self.options['conda-prefix'], name=self.name),
+             'command': templ_cmd.render(**self.options),
              'directory': self.options['etc-directory'],
              'stopwaitsecs': '30',
              'killasgroup': 'true',
