@@ -123,6 +123,9 @@ class Recipe(object):
         
         tmp_path = os.path.join(self.options['lib-directory'], 'tmp', self.name)
         make_dirs(tmp_path, self.options['user'])
+
+        cache_path = os.path.join(self.options['lib-directory'], 'cache', self.name)
+        make_dirs(cache_path, self.options['user'])
         
     def install(self, update=False):
         installed = []
