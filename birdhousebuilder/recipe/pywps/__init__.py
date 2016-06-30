@@ -18,7 +18,7 @@ templ_pywps = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${env_path}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
+    "${bin_dir}/python ${conda_prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
 templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
 
 def make_dirs(name, user):
@@ -87,8 +87,7 @@ class Recipe(object):
             'env': self.options['env'],
             'pkgs': self.options['pkgs'],
             'channels': self.options['channels']})
-        self.env_path = self.conda.options['env-path']
-        self.options['env-path'] = self.options['env_path'] = self.env_path
+        self.options['conda-prefix'] = self.options['conda_prefix'] = self.conda.options['prefix']
 
         # nginx options
         self.options['hostname'] = self.options.get('hostname', 'localhost')
@@ -159,7 +158,7 @@ class Recipe(object):
         text = templ_gunicorn.render(
             name=self.name,
             prefix=self.prefix,
-            env_path=self.env_path,
+            conda_prefix=self.options['conda-prefix'],
             bin_dir=self.bin_dir,
             package_dir=self.package_dir,
             workers = self.options['workers'],
@@ -194,7 +193,7 @@ class Recipe(object):
              'user': self.options.get('user'),
              'etc-user': self.options.get('etc-user'),
              'program': self.name,
-             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, env_path=self.env_path, name=self.name),
+             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, conda_prefix=self.options['conda-prefix'], name=self.name),
              'directory': self.options['etc-directory'],
              'stopwaitsecs': '30',
              'killasgroup': 'true',
