@@ -1,10 +1,12 @@
 Change History
 **************
 
-0.5.0 (2016-06-18)
+0.5.0 (2016-06-30)
 ==================
 
 * using zc.recipe.deployment.
+* changed cache path to ``var/lib/pywps/cache``.
+* changed tmp path to ``var/lib/pywps/tmp``.
 
 0.4.0 (2016-03-03)
 ==================
