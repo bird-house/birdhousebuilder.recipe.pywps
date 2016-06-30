@@ -9,7 +9,7 @@ birdhousebuilder.recipe.pywps
 Introduction
 ************
 
-``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to install and configure `PyWPS`_ with `Anaconda`_. `PyWPS`_ is a Python implementation of a `Web Processing Service`_ (WPS). ``PyWPS`` will be deployed as a `Supervisor`_ service and is available on a `Nginx`_ web server. 
+``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to install and configure `PyWPS`_ with `Anaconda`_. `PyWPS`_ is a Python implementation of a `Web Processing Service`_ (WPS). ``PyWPS`` will be deployed as a `Supervisor`_ service and is available behind a `Nginx`_ web server. 
 This recipe is used by the `Birdhouse`_ project. 
 
 .. _`Buildout`: http://buildout.org/
@@ -24,67 +24,74 @@ This recipe is used by the `Birdhouse`_ project.
 Usage
 *****
 
-The recipe requires that Anaconda is already installed. It assumes that the default Anaconda location is in your home directory ``~/anaconda``. Otherwise you need to set the ``ANACONDA_HOME`` environment variable or the Buildout option ``anaconda-home``.
+The recipe requires that Anaconda is already installed. You can use the buildout option ``anaconda-home`` to set the prefix for the anaconda installation. Otherwise the environment variable ``CONDA_PREFIX`` (variable is set when activating a conda environment) is used as conda prefix. 
 
-It installs the ``pywps`` package from a conda channel in a conda environment named ``birdhouse``. The location of the birdhouse environment is ``.conda/envs/birdhouse``. It setups a `PyWPS`_ output folder in ``~/.conda/envs/birdhouse/var/lib/pywps``. It deploys a `Supervisor`_ configuration for ``PyWPS`` in ``~/.conda/envs/birdhouse/etc/supervisor/conf.d/pywps.conf``. Supervisor can be started with ``~/.conda/envs/birdhouse/etc/init.d/supervisor start``.
+It installs the ``pywps`` package from a conda channel in a conda environment defined by ``CONDA_PREFIX``. The location of the intallation is given by the ``prefix`` buildout option. It setups a `PyWPS`_ output folder in ``${prefix}/var/lib/pywps``. It deploys a `Supervisor`_ configuration for ``PyWPS`` in ``${prefix}/etc/supervisor/conf.d/pywps.conf``. Supervisor can be started with ``${prefix}/etc/init.d/supervisor start``.
 
-The recipe will install the ``nginx`` package from a conda channel and deploy a Nginx site configuration for ``PyWPS``. The configuration will be deployed in ``~/.conda/envs/birdhouse/etc/nginx/conf.d/pywps.conf``. Nginx can be started with ``~/.conda/envs/birdhouse/etc/init.d/nginx start``.
+The recipe will install the ``nginx`` package from a conda channel and deploy a Nginx site configuration for ``PyWPS``. The configuration will be deployed in ``${prefix}/etc/nginx/conf.d/pywps.conf``. Nginx will be started by supervisor.
 
 By default ``PyWPS`` will be available on http://localhost:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities.
 
-The recipe depends on ``birdhousebuilder.recipe.conda``, ``birdhousebuilder.recipe.supervisor`` and ``birdhousebuilder.recipe.nginx``.
+The recipe depends on: 
+
+* ``birdhousebuilder.recipe.conda``, 
+* ``birdhousebuilder.recipe.supervisor``, 
+* ``birdhousebuilder.recipe.nginx`` and 
+* ``zc.recipe.deployment``.
 
 Supported options
 =================
 
-The recipe supports the following options:
+The recipe supports the following buildout options:
 
-``anaconda-home``
-   Buildout option with the root folder of the Anaconda installation. Default: ``$HOME/anaconda``.
-   The default location can also be set with the environment variable ``ANACONDA_HOME``. Example::
+**anaconda-home**
+   Buildout option pointing to the root folder of the Anaconda installation. Default: ``$HOME/anaconda``.
 
-     export ANACONDA_HOME=/opt/anaconda
+Buildout options for ``pywps``:
 
-   Search priority is:
+**prefix**
+  Deployment option to set the prefix of the installation folder. Default: ``/``
 
-   1. ``anaconda-home`` in ``buildout.cfg``
-   2. ``$ANACONDA_HOME``
-   3. ``$HOME/anaconda``
+**user**
+  Deployment option to set the run user.
 
-``name``
+**etc-user**
+  Deployment option to set the user of the ``/etc`` directory. Default: ``root``
+
+**name**
    The name of your WPS project (used for config names and folder path).
 
-``hostname``
+**hostname**
    The hostname of the ``PyWPS`` service (nginx). Default: ``localhost``
 
-``http-port``
+**http-port**
    The http port of the ``PyWPS`` service (nginx). Default: ``8091``
 
-``https-port``
+**https-port**
    The https port of the ``PyWPS`` service (nginx). Default: ``28091``
 
-``output-port``
+**output-port**
    The http port of the ``PyWPS`` output file service (nginx). Default: ``8090``
 
-``workers``
+**workers**
    The number of gunicorn workers for handling requests. Default: 1
 
-``processesPath``
+**processesPath**
    Path the ``PyWPS`` processes.
    
-``title``
+**title**
    Title used for your WPS service.
 
-``abstract``
+**abstract**
    Description of your WPS service.
 
-``logLevel``
+**logLevel**
    Logging level for ``PyWPS``. Default: ``WARN``
 
-``maxoperations``
+**maxoperations**
    Maximum number of parallel WPS operations. Default: 100
 
-``maxfilesize``
+**maxfilesize**
    Maximal file size accepted in WPS process. Default: 30GB
  
 
@@ -96,11 +103,13 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
   [buildout]
   parts = pywps
 
-  anaconda-home = /home/myself/anaconda
+  anaconda-home = /opt/anaconda
 
   [pywps]
   recipe = birdhousebuilder.recipe.pywps
-  sites = myproject
+  name = myproject
+  prefix = /
+  user = www-data
   hostname = localhost
   http-port = 8091
   https-port = 28091
@@ -112,7 +121,7 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
 
 After installing with Buildout start the ``PyWPS`` service with::
 
-  $ cd /home/myself/.conda/envs/birdhouse
+  $ cd ${prefix}
   $ etc/init.d/supervisord start  # start|stop|restart
   $ etc/init.d/nginx start        # start|stop|restart
   $ bin/supervisorctl status      # check that pycsw is running
