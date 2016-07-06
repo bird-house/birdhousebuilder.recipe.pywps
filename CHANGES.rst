@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.5.1 (2016-07-06)
+==================
+
+* added client_body_max_size to nginx config for uploads.
+
 0.5.0 (2016-06-30)
 ==================
 
