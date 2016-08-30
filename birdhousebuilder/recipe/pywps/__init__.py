@@ -14,17 +14,23 @@ from birdhousebuilder.recipe import supervisor, nginx
 
 import logging
 
-templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__), "pywps.cfg"))
-templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "wpsapp.py"))
-templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf_py"))
+templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__),
+                           "pywps.cfg"))
+templ_app = Template(filename=os.path.join(os.path.dirname(__file__),
+                     "wpsapp.py"))
+templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__),
+                          "gunicorn.conf_py"))
 templ_cmd = Template(
     "${bin_directory}/python ${conda_prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
-templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__), "runwps.sh"))
+templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__),
+                        "runwps.sh"))
+
 
 def make_dirs(name, user):
     etc_uid, etc_gid = pwd.getpwnam(user)[2:4]
     created = []
     make_dir(name, etc_uid, etc_gid, 0o755, created)
+
 
 class Recipe(object):
     """This recipe is used by zc.buildout"""
@@ -37,19 +43,19 @@ class Recipe(object):
         self.options['name'] = self.name
 
         self.logger = logging.getLogger(self.name)
-        
+
         # deployment layout
         def add_section(section_name, options):
             if section_name in buildout._raw:
                 raise KeyError("already in buildout", section_name)
             buildout._raw[section_name] = options
-            buildout[section_name] # cause it to be added to the working parts
+            buildout[section_name]  # cause it to be added to the working parts
 
         self.prefix = self.options.get('prefix', '')
         if not self.prefix:
             self.prefix = b_options['parts-directory']
         self.options['prefix'] = self.prefix
-            
+
         user = self.options.get('user', '')
         if not user:
             user = os.environ['USER']
@@ -59,7 +65,7 @@ class Recipe(object):
         if not etc_user:
             etc_user = user
         self.options['etc-user'] = etc_user
-            
+
         self.deployment_name = self.name + "-pywps-deployment"
         self.deployment = zc.recipe.deployment.Install(buildout, self.deployment_name, {
             'name': "pywps",
@@ -67,7 +73,7 @@ class Recipe(object):
             'user': self.options['user'],
             'etc-user': self.options['etc-user']})
         add_section(self.deployment_name, self.deployment.options)
-        
+
         self.options['etc-prefix'] = self.deployment.options['etc-prefix']
         self.options['var-prefix'] = self.options['var_prefix'] = self.deployment.options['var-prefix']
         self.options['etc-directory'] = self.deployment.options['etc-directory']
@@ -81,7 +87,7 @@ class Recipe(object):
         self.options['env'] = self.options.get('env', '')
         self.options['pkgs'] = self.options.get('pkgs', 'pywps>=3.2.5 gunicorn gevent eventlet')
         self.options['channels'] = self.options.get('channels', 'defaults birdhouse')
-        
+
         self.conda = birdhousebuilder.recipe.conda.Recipe(self.buildout, self.name, {
             'env': self.options['env'],
             'pkgs': self.options['pkgs'],
@@ -91,42 +97,51 @@ class Recipe(object):
         # nginx options
         self.options['hostname'] = self.options.get('hostname', 'localhost')
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
-        self.options['https-port'] = self.options['https_port'] =self.options.get('https-port', '28091')
+        self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
         self.options['output-port'] = self.options['output_port'] = self.options.get('output-port','8090')
-        
+
         # gunicorn options
         self.options['workers'] = options.get('workers', '1')
-        self.options['worker-class'] = self.options['worker_class']  =options.get('worker-class', 'gevent')
+        self.options['worker-class'] = self.options['worker_class'] = options.get('worker-class', 'gevent')
         self.options['timeout'] = options.get('timeout', '30')
         self.options['loglevel'] = options.get('loglevel', 'info')
-        
+
         processes_path = os.path.join(b_options.get('directory'), 'processes')
-        self.options['processesPath'] = options.get('processesPath', processes_path)
+        self.options['processes_path'] = options.get('processes_path',
+                                                     processes_path)
 
         self.options['title'] = options.get('title', 'PyWPS Server')
-        self.options['abstract'] = options.get('abstract', 'See http://pywps.wald.intevation.org and http://www.opengeospatial.org/standards/wps')
-        self.options['providerName'] = options.get('providerName', '')
+        self.options['abstract'] = options.get(
+            'abstract', 'See http://pywps.org/')
+        self.options['provider_name'] = options.get('provider_name', '')
         self.options['city'] = options.get('city', '')
         self.options['country'] = options.get('country', '')
-        self.options['providerSite'] = options.get('providerSite', '')
-        self.options['logLevel'] = options.get('logLevel', 'WARN')
-        self.options['maxoperations'] = options.get('maxoperations', '100')
-        self.options['maxinputparamlength'] = options.get('maxinputparamlength', '2048')
-        self.options['maxfilesize'] = options.get('maxfilesize', '30GB')
+        self.options['provider_url'] = options.get('provider_url', '')
+        self.options['loglevel'] = options.get('loglevel', 'WARN')
+        self.options['maxoperations'] = options.get('maxoperations', '30')
+        self.options['maxinputparamlength'] = options.get(
+            'maxinputparamlength', '1024')
+        self.options['maxsingleinputsize'] = options.get(
+            'maxsingleinputsize', '30mb')
+        self.options['maxrequestsize'] = options.get(
+            'maxrequestsize', '30mb')
 
         self.options['bin-directory'] = self.options['bin_directory'] = b_options.get('bin-directory')
         self.options['directory'] = b_options.get('directory')
 
         # make dirs
-        output_path = os.path.join(self.options['lib-directory'], 'outputs', self.name)
+        output_path = os.path.join(
+            self.options['lib-directory'], 'outputs', self.name)
         make_dirs(output_path, self.options['user'])
-        
-        tmp_path = os.path.join(self.options['lib-directory'], 'tmp', self.name)
+
+        tmp_path = os.path.join(
+            self.options['lib-directory'], 'tmp', self.name)
         make_dirs(tmp_path, self.options['user'])
 
-        cache_path = os.path.join(self.options['lib-directory'], 'cache', self.name)
+        cache_path = os.path.join(
+            self.options['lib-directory'], 'cache', self.name)
         make_dirs(cache_path, self.options['user'])
-        
+
     def install(self, update=False):
         installed = []
         if not update:
@@ -141,7 +156,7 @@ class Recipe(object):
 
         # fix permissions for var/run
         os.chmod(os.path.join(self.options['var-prefix'], 'run'), 0o755)
-        
+
         return installed
 
     def install_config(self):
@@ -204,7 +219,8 @@ class Recipe(object):
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
              'name': 'default',
-             'input': os.path.join(os.path.dirname(__file__), "nginx-default.conf"),
+             'input': os.path.join(os.path.dirname(__file__),
+                                   "nginx-default.conf"),
              'hostname': self.options.get('hostname'),
              'port': self.options.get('output-port')
              })
@@ -227,10 +243,10 @@ class Recipe(object):
              'https_port': self.options['https-port'],
              })
         return script.install(update=update)
-        
+
     def update(self):
         return self.install(update=True)
-    
+
+
 def uninstall(name, options):
     pass
-

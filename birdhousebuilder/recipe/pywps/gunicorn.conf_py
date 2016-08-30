@@ -14,11 +14,11 @@ def python_path():
     return ':'.join(ppath)
 
 # environment
-raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${name}.cfg", 
+raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${name}.cfg",
            "PATH=${bin_directory}:${conda_prefix}/bin:/usr/bin:/bin:/usr/local/bin",
            "GDAL_DATA=${conda_prefix}/share/gdal",
            "PYTHONPATH=%s" % python_path(),
-           ]                                                                                                               
+           ]
 
 # logging
 
