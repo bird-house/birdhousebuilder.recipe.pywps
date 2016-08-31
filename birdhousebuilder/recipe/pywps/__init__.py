@@ -21,9 +21,9 @@ templ_app = Template(filename=os.path.join(os.path.dirname(__file__),
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__),
                           "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_directory}/python ${conda_prefix}/bin/gunicorn wpsapp:application -c ${prefix}/etc/gunicorn/${name}.py")
-templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__),
-                        "runwps.sh"))
+    "${bin_directory}/python ${conda_prefix}/bin/gunicorn ${name}_app:application -c ${prefix}/etc/gunicorn/${name}.py")
+# templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__),
+#                         "runwps.sh"))
 
 
 def make_dirs(name, user):
@@ -85,7 +85,7 @@ class Recipe(object):
 
         # conda environment
         self.options['env'] = self.options.get('env', '')
-        self.options['pkgs'] = self.options.get('pkgs', 'pywps>=3.2.5 gunicorn gevent eventlet')
+        self.options['pkgs'] = self.options.get('pkgs', 'pywps gunicorn gevent')
         self.options['channels'] = self.options.get('channels', 'defaults birdhouse')
 
         self.conda = birdhousebuilder.recipe.conda.Recipe(self.buildout, self.name, {
@@ -150,9 +150,9 @@ class Recipe(object):
         installed += list(self.install_config())
         installed += list(self.install_app())
         installed += list(self.install_gunicorn())
-        installed += list(self.install_supervisor(update))
-        installed += list(self.install_nginx_default(update))
-        installed += list(self.install_nginx(update))
+        #installed += list(self.install_supervisor(update))
+        #installed += list(self.install_nginx_default(update))
+        #installed += list(self.install_nginx(update))
 
         # fix permissions for var/run
         os.chmod(os.path.join(self.options['var-prefix'], 'run'), 0o755)
@@ -182,10 +182,10 @@ class Recipe(object):
 
     def install_app(self):
         """
-        install etc/pywps/wpsapp.py
+        install etc/pywps/my_app.py
         """
         text = templ_app.render(prefix=self.prefix)
-        config = Configuration(self.buildout, 'wpsapp.py', {
+        config = Configuration(self.buildout, self.name+'_app.py', {
             'deployment': self.deployment_name,
             'text': text})
         return [config.install()]
@@ -200,6 +200,7 @@ class Recipe(object):
             {'prefix': self.options.get('prefix'),
              'user': self.options.get('user'),
              'etc-user': self.options.get('etc-user'),
+             'env': 'birdhouse',
              'program': self.name,
              'command': templ_cmd.render(**self.options),
              'directory': self.options['etc-directory'],
@@ -218,6 +219,7 @@ class Recipe(object):
             {'prefix': self.options['prefix'],
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
+             'env': 'birdhouse',
              'name': 'default',
              'input': os.path.join(os.path.dirname(__file__),
                                    "nginx-default.conf"),
@@ -237,6 +239,7 @@ class Recipe(object):
              'prefix': self.options['prefix'],
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
+             'env': 'birdhouse',
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'hostname': self.options.get('hostname'),
              'http_port': self.options['http-port'],
