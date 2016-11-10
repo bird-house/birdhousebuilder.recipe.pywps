@@ -7,7 +7,7 @@ from setuptools import setup
 
 name = 'birdhousebuilder.recipe.pywps'
 
-version = '0.8.0'
+version = '0.8.1'
 description = 'A Buildout recipe to install and configure PyWPS Web Processing Service with conda.'
 long_description = (
     open('README.rst').read() + '\n' +
@@ -48,11 +48,11 @@ setup(name=name,
       author_email="wps-dev at dkrz.de",
       url='https://github.com/bird-house/birdhousebuilder.recipe.pywps',
       license='Apache License 2',
-      install_requires = reqs,
+      install_requires=reqs,
       extras_require=dict(tests=tests_reqs),
       entry_points=entry_points,
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages = ['birdhousebuilder', 'birdhousebuilder.recipe'],
-      include_package_data = True,
-      zip_safe = False,
+      namespace_packages=['birdhousebuilder', 'birdhousebuilder.recipe'],
+      include_package_data=True,
+      zip_safe=False,
       )
