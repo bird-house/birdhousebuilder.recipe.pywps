@@ -107,17 +107,19 @@ class Recipe(object):
         self.options['loglevel'] = options.get('loglevel', 'info')
 
         # pywps options
-        self.options['processes_import'] = self.options.get('processes_import', 'processes')
+        self.options['processes_import'] = self.options['processes-import'] = \
+            self.options.get('processes-import', 'processes')
         processes_path = os.path.join(b_options.get('directory'), 'processes')
-        self.options['processes_path'] = self.options.get('processes_path', processes_path)
+        self.options['processes_path'] = self.options['processes-path'] = \
+            self.options.get('processes-path', processes_path)
 
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
             'abstract', 'See http://pywps.org/')
-        self.options['provider_name'] = options.get('provider_name', '')
+        self.options['provider_name'] = self.options['provider-name'] = options.get('provider-name', '')
         self.options['city'] = options.get('city', '')
         self.options['country'] = options.get('country', '')
-        self.options['provider_url'] = options.get('provider_url', '')
+        self.options['provider_url'] = self.options['provider-url'] = options.get('provider-url', '')
         self.options['loglevel'] = options.get('loglevel', 'WARN')
         self.options['maxoperations'] = options.get('maxoperations', '30')
         self.options['maxinputparamlength'] = options.get(
