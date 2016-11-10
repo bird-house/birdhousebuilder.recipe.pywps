@@ -9,8 +9,8 @@ birdhousebuilder.recipe.pywps
 Introduction
 ************
 
-``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to install and configure `PyWPS`_ with `Anaconda`_. `PyWPS`_ is a Python implementation of a `Web Processing Service`_ (WPS). ``PyWPS`` will be deployed as a `Supervisor`_ service and is available behind a `Nginx`_ web server. 
-This recipe is used by the `Birdhouse`_ project. 
+``birdhousebuilder.recipe.pywps`` is a `Buildout`_ recipe to install and configure `PyWPS`_ with `Anaconda`_. `PyWPS`_ is a Python implementation of a `Web Processing Service`_ (WPS). ``PyWPS`` will be deployed as a `Supervisor`_ service and is available behind a `Nginx`_ web server.
+This recipe is used by the `Birdhouse`_ project.
 
 .. _`Buildout`: http://buildout.org/
 .. _`Anaconda`: http://continuum.io/
@@ -24,7 +24,7 @@ This recipe is used by the `Birdhouse`_ project.
 Usage
 *****
 
-The recipe requires that Anaconda is already installed. You can use the buildout option ``anaconda-home`` to set the prefix for the anaconda installation. Otherwise the environment variable ``CONDA_PREFIX`` (variable is set when activating a conda environment) is used as conda prefix. 
+The recipe requires that Anaconda is already installed. You can use the buildout option ``anaconda-home`` to set the prefix for the anaconda installation. Otherwise the environment variable ``CONDA_PREFIX`` (variable is set when activating a conda environment) is used as conda prefix.
 
 It installs the ``pywps`` package from a conda channel in a conda environment defined by ``CONDA_PREFIX``. The location of the intallation is given by the ``prefix`` buildout option. It setups a `PyWPS`_ output folder in ``${prefix}/var/lib/pywps``. It deploys a `Supervisor`_ configuration for ``PyWPS`` in ``${prefix}/etc/supervisor/conf.d/pywps.conf``. Supervisor can be started with ``${prefix}/etc/init.d/supervisor start``.
 
@@ -32,11 +32,11 @@ The recipe will install the ``nginx`` package from a conda channel and deploy a 
 
 By default ``PyWPS`` will be available on http://localhost:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities.
 
-The recipe depends on: 
+The recipe depends on:
 
-* ``birdhousebuilder.recipe.conda``, 
-* ``birdhousebuilder.recipe.supervisor``, 
-* ``birdhousebuilder.recipe.nginx`` and 
+* ``birdhousebuilder.recipe.conda``,
+* ``birdhousebuilder.recipe.supervisor``,
+* ``birdhousebuilder.recipe.nginx`` and
 * ``zc.recipe.deployment``.
 
 Supported options
@@ -76,24 +76,27 @@ Buildout options for ``pywps``:
 **workers**
    The number of gunicorn workers for handling requests. Default: 1
 
-**processesPath**
+**processes-import**
+   Python package with processes.
+
+**processes-path**
    Path the ``PyWPS`` processes.
-   
+
 **title**
    Title used for your WPS service.
 
 **abstract**
    Description of your WPS service.
 
-**logLevel**
+**loglevel**
    Logging level for ``PyWPS``. Default: ``WARN``
 
 **maxoperations**
-   Maximum number of parallel WPS operations. Default: 100
+   Maximum number of parallel WPS operations. Default: 30
 
-**maxfilesize**
-   Maximal file size accepted in WPS process. Default: 30GB
- 
+**maxrequestsize**
+   Maximal request size accepted in WPS process. Default: 30mb
+
 
 Example usage
 =============
@@ -102,8 +105,6 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
 
   [buildout]
   parts = pywps
-
-  anaconda-home = /opt/anaconda
 
   [pywps]
   recipe = birdhousebuilder.recipe.pywps
@@ -115,7 +116,8 @@ The following example ``buildout.cfg`` installs ``PyWPS`` with Anaconda::
   https-port = 28091
 
   # pywps options
-  processesPath = ${buildout:directory}/myproject/processes
+  processes-import = myproject.processes
+  processes-path = ${buildout:directory}/myproject/processes
   title = MyProject ...
   abstract = MyProject does ...
 
@@ -127,11 +129,6 @@ After installing with Buildout start the ``PyWPS`` service with::
   $ bin/supervisorctl status      # check that pycsw is running
   $ less var/log/pywps/myproject.log  # check log file
 
-Open your browser with the following URL:: 
+Open your browser with the following URL::
 
   http://localhost:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities
-
-
-
-
-
