@@ -1,6 +1,13 @@
 Change History
 **************
 
+0.8.1 (2016-11-10)
+==================
+
+* fixed wspapp.py template: using processes-import option
+* using proccess-path option.
+* update Readme.
+
 0.8.0 (2016-10-17)
 ==================
 
