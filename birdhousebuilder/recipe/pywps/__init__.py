@@ -17,7 +17,7 @@ import logging
 templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__),
                            "pywps.cfg"))
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__),
-                     "wpsapp.py"))
+                     "wpsapp_py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__),
                           "gunicorn.conf_py"))
 templ_cmd = Template(
@@ -98,7 +98,7 @@ class Recipe(object):
         self.options['hostname'] = self.options.get('hostname', 'localhost')
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
         self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
-        self.options['output-port'] = self.options['output_port'] = self.options.get('output-port','8090')
+        self.options['output-port'] = self.options['output_port'] = self.options.get('output-port', '8090')
 
         # gunicorn options
         self.options['workers'] = options.get('workers', '1')
@@ -106,9 +106,10 @@ class Recipe(object):
         self.options['timeout'] = options.get('timeout', '30')
         self.options['loglevel'] = options.get('loglevel', 'info')
 
+        # pywps options
+        self.options['processes_import'] = self.options.get('processes_import', 'processes')
         processes_path = os.path.join(b_options.get('directory'), 'processes')
-        self.options['processes_path'] = options.get('processes_path',
-                                                     processes_path)
+        self.options['processes_path'] = self.options.get('processes_path', processes_path)
 
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
@@ -174,7 +175,7 @@ class Recipe(object):
         install gunicorn config in etc/gunicorn/
         """
         text = templ_gunicorn.render(**self.options)
-        config = Configuration(self.buildout, self.name+'.py', {
+        config = Configuration(self.buildout, self.name + '.py', {
             'deployment': self.deployment_name,
             'directory': os.path.join(self.options['etc-prefix'], 'gunicorn'),
             'text': text})
@@ -184,8 +185,8 @@ class Recipe(object):
         """
         install etc/pywps/my_app.py
         """
-        text = templ_app.render(prefix=self.prefix)
-        config = Configuration(self.buildout, self.name+'_app.py', {
+        text = templ_app.render(**self.options)
+        config = Configuration(self.buildout, self.name + '_app.py', {
             'deployment': self.deployment_name,
             'text': text})
         return [config.install()]
