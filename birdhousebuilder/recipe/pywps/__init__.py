@@ -12,6 +12,9 @@ from zc.recipe.deployment import make_dir
 import birdhousebuilder.recipe.conda
 from birdhousebuilder.recipe import supervisor, nginx
 
+from zc.buildout.buildout import bool_option
+
+
 import logging
 
 templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__),
@@ -96,6 +99,10 @@ class Recipe(object):
 
         # nginx options
         self.options['hostname'] = self.options.get('hostname', 'localhost')
+        if bool_option(self.options, 'enable-https', False):
+            self.options['enable_https'] = 'true'
+        else:
+            self.options['enable_https'] = 'false'
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
         self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
         self.options['http-output-port'] = self.options['http_output_port'] = \
