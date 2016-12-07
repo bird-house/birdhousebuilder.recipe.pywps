@@ -98,7 +98,10 @@ class Recipe(object):
         self.options['hostname'] = self.options.get('hostname', 'localhost')
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
         self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
-        self.options['output-port'] = self.options['output_port'] = self.options.get('output-port', '8090')
+        self.options['http-output-port'] = self.options['http_output_port'] = \
+            self.options.get('http-output-port', '8090')
+        self.options['https-output-port'] = self.options['https_output_port'] = \
+            self.options.get('https-output-port', '28090')
 
         # gunicorn options
         self.options['workers'] = options.get('workers', '1')
@@ -227,7 +230,8 @@ class Recipe(object):
              'input': os.path.join(os.path.dirname(__file__),
                                    "nginx-default.conf"),
              'hostname': self.options.get('hostname'),
-             'port': self.options.get('output-port')
+             'http_port': self.options.get('http-output-port'),
+             'https_port': self.options.get('https-output-port')
              })
         return script.install(update=update)
 
