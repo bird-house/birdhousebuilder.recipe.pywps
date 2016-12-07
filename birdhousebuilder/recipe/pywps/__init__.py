@@ -126,18 +126,16 @@ class Recipe(object):
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
             'abstract', 'See http://pywps.org/')
-        self.options['provider_name'] = self.options['provider-name'] = options.get('provider-name', '')
-        self.options['city'] = options.get('city', '')
-        self.options['country'] = options.get('country', '')
-        self.options['provider_url'] = self.options['provider-url'] = options.get('provider-url', '')
-        self.options['loglevel'] = options.get('loglevel', 'WARN')
-        self.options['maxoperations'] = options.get('maxoperations', '30')
-        self.options['maxinputparamlength'] = options.get(
-            'maxinputparamlength', '1024')
-        self.options['maxsingleinputsize'] = options.get(
-            'maxsingleinputsize', '30mb')
-        self.options['maxrequestsize'] = options.get(
-            'maxrequestsize', '30mb')
+        self.options['provider_name'] = self.options['provider-name'] = self.options.get('provider-name', '')
+        self.options['city'] = self.options.get('city', '')
+        self.options['country'] = self.options.get('country', '')
+        self.options['provider_url'] = self.options['provider-url'] = self.options.get('provider-url', '')
+        self.options['loglevel'] = self.options.get('loglevel', 'WARN')
+        self.options['parallelprocesses'] = self.options.get('parallelprocesses', '2')
+        self.options['maxprocesses'] = self.options.get('maxprocesses', '30')
+        self.options['maxinputparamlength'] = self.options.get('maxinputparamlength', '1024')
+        self.options['maxsingleinputsize'] = self.options.get('maxsingleinputsize', '30mb')
+        self.options['maxrequestsize'] = self.options.get('maxrequestsize', '30mb')
 
         self.options['bin-directory'] = self.options['bin_directory'] = b_options.get('bin-directory')
         self.options['directory'] = b_options.get('directory')
