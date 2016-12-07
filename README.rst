@@ -16,7 +16,8 @@ This recipe is used by the `Birdhouse`_ project.
 .. _`Anaconda`: http://continuum.io/
 .. _`Supervisor`: http://supervisord.org/
 .. _`Nginx`: http://nginx.org/
-.. _`PyWPS`: https://github.com/geopython/PyWPS
+.. _`PyWPS`: http://pywps.org/
+.. _`PyWPS documentation`: http://pywps.readthedocs.io/en/latest/configuration.html
 .. _`Web Processing Service`: https://en.wikipedia.org/wiki/Web_Processing_Service
 .. _`Birdhouse`: http://bird-house.github.io/
 
@@ -41,6 +42,8 @@ The recipe depends on:
 
 Supported options
 =================
+
+The PyWPS options which are configured by buildout are explained in the `PyWPS documentation`_.
 
 The recipe supports the following buildout options:
 
