@@ -91,8 +91,13 @@ Buildout options for ``pywps``:
 **loglevel**
    Logging level for ``PyWPS``. Default: ``WARN``
 
-**maxoperations**
-   Maximum number of parallel WPS operations. Default: 30
+**parallelprocesses**
+   Maximum number of parallel running processes.
+   The effective number of parallel running processes is limited by the number of cores
+   in the hosting machine. Default: 2
+
+**maxprocesses**
+   Maximum number of processes which are accepted in the queue. Default: 30
 
 **maxrequestsize**
    Maximal request size accepted in WPS process. Default: 30mb
