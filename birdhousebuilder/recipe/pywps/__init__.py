@@ -106,7 +106,7 @@ class Recipe(object):
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
         self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
         self.options['http-output-port'] = self.options['http_output_port'] = \
-            self.options.get('http-output-port', '8090')
+            self.options.get('http-output-port', self.options.get('output-port', '8090'))
         self.options['https-output-port'] = self.options['https_output_port'] = \
             self.options.get('https-output-port', '28090')
 
