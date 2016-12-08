@@ -73,8 +73,11 @@ Buildout options for ``pywps``:
 **https-port**
    The https port of the ``PyWPS`` service (nginx). Default: ``28091``
 
-**output-port**
+**http-output-port**, **output-port**
    The http port of the ``PyWPS`` output file service (nginx). Default: ``8090``
+
+**https-output-port**
+   The https port of the ``PyWPS`` output file service (nginx). Default: ``28090``
 
 **workers**
    The number of gunicorn workers for handling requests. Default: 1
