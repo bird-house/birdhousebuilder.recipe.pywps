@@ -1,12 +1,21 @@
 Change History
 **************
 
+0.8.2 (2016-12-09)
+==================
+
+* set ``HOME`` in gunicorn config to var/lib/pywps/tmp/${name}.
+* added ``parallelprocesses`` option.
+* added ``https-output-port`` and ``http-output-port`` option.
+* added ``enable-https`` option.
+* updated Readme.
+
 0.8.1 (2016-11-10)
 ==================
 
 * fixed wspapp.py template: using processes-import option
 * using proccess-path option.
-* update Readme.
+* updated Readme.
 
 0.8.0 (2016-10-17)
 ==================
