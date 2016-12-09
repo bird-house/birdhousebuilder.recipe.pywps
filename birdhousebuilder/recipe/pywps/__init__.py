@@ -111,6 +111,9 @@ class Recipe(object):
             self.options.get('https-output-port', '28090')
 
         # gunicorn options
+        output_path = os.path.join(
+            self.options['lib-directory'], 'outputs', self.name)
+        self.options['home'] = self.options.get('home', output_path)
         self.options['workers'] = options.get('workers', '1')
         self.options['worker-class'] = self.options['worker_class'] = options.get('worker-class', 'gevent')
         self.options['timeout'] = options.get('timeout', '30')
@@ -141,9 +144,8 @@ class Recipe(object):
         self.options['directory'] = b_options.get('directory')
 
         # make dirs
-        output_path = os.path.join(
-            self.options['lib-directory'], 'outputs', self.name)
         make_dirs(output_path, self.options['user'])
+        make_dirs(self.options['home'], self.options['user'])
 
         tmp_path = os.path.join(
             self.options['lib-directory'], 'tmp', self.name)
