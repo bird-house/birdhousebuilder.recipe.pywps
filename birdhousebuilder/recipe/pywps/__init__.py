@@ -139,6 +139,8 @@ class Recipe(object):
         self.options['maxinputparamlength'] = self.options.get('maxinputparamlength', '1024')
         self.options['maxsingleinputsize'] = self.options.get('maxsingleinputsize', '30mb')
         self.options['maxrequestsize'] = self.options.get('maxrequestsize', '30mb')
+        # extra options
+        self.options['archive_root'] = self.options['archive-root'] = self.options.get('archive-root', '')
 
         self.options['bin-directory'] = self.options['bin_directory'] = b_options.get('bin-directory')
         self.options['directory'] = b_options.get('directory')
