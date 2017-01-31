@@ -1,7 +1,7 @@
 Change History
 **************
 
-0.8.4 (2017-01-xx)
+0.8.4 (2017-01-31)
 ==================
 
 * added options ``sethomedir`` and ``setworkdir``.
