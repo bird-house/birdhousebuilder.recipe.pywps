@@ -12,6 +12,7 @@ from zc.recipe.deployment import make_dir
 import birdhousebuilder.recipe.conda
 from birdhousebuilder.recipe import supervisor, nginx
 
+import zc.buildout
 from zc.buildout.buildout import bool_option
 
 
@@ -36,6 +37,19 @@ def make_dirs(name, user):
 
 
 def parse_extra_options(option_str):
+    """
+    Parses the extra options parameter.
+
+    The option_str is a string with ``opt=value`` pairs.
+
+    Example::
+
+        tempdir=/path/to/tempdir
+        archive_root=/path/to/archive
+
+    :param option_str: A string parameter with the extra options.
+    :return: A dict with the parsed extra options.
+    """
     if option_str:
         try:
             extra_options = option_str.split()
@@ -43,7 +57,7 @@ def parse_extra_options(option_str):
         except Exception:
             msg = "Can not parse extra-options: {}".format(option_str)
             logging.exception(msg)
-            raise Exception(msg)
+            raise zc.buildout.UserError(msg)
     else:
         extra_options = {}
     return extra_options

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 
+import zc.buildout
+
 
 class UtilsTestCase(unittest.TestCase):
 
@@ -18,7 +20,7 @@ class UtilsTestCase(unittest.TestCase):
         assert extra_options['esmval_root'] == "/path/to/esmval"
         assert extra_options['archive_root'] == "/path/to/archive"
         # with spaces ... not working yet
-        with self.assertRaises(Exception):
+        with self.assertRaises(zc.buildout.UserError):
             parse_extra_options("""
                     esmval_root = /path/to/esmval
                     archive_root  =  /path/to/archive
