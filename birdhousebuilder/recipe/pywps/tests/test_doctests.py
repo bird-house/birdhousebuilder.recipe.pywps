@@ -8,9 +8,9 @@ from doctest import DocFileSuite
 from doctest import ELLIPSIS
 from doctest import NORMALIZE_WHITESPACE
 from doctest import REPORT_UDIFF
-# from zc.buildout.testing import buildoutSetUp
-# from zc.buildout.testing import buildoutTearDown
-# from zc.buildout.testing import install_develop
+from zc.buildout.testing import buildoutSetUp
+from zc.buildout.testing import buildoutTearDown
+from zc.buildout.testing import install_develop
 
 
 def setUp(test):
