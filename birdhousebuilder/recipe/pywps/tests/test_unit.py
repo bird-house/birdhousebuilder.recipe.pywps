@@ -17,5 +17,11 @@ class UtilsTestCase(unittest.TestCase):
             """)
         assert extra_options['esmval_root'] == "/path/to/esmval"
         assert extra_options['archive_root'] == "/path/to/archive"
+        # with spaces ... not working yet
+        with self.assertRaises(Exception):
+            parse_extra_options("""
+                    esmval_root = /path/to/esmval
+                    archive_root  =  /path/to/archive
+                    """)
 
 
