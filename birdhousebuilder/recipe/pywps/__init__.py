@@ -151,12 +151,7 @@ class Recipe(object):
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # extra options
-        self.options['archive_root'] = self.options['archive-root'] = self.options.get('archive-root', '')
-        extra_options = self.options.get('extra-options')
-        if extra_options:
-            extra_options = extra_options.split()
-            extra_options = dict([('=' in opt) and opt.split('=', 1) for opt in extra_options])
-        self.extra_options = extra_options or {}
+        self.extra_options = parse_extra_options(self.options.get('extra-options', ''))
 
         self.options['bin-directory'] = self.options['bin_directory'] = b_options.get('bin-directory')
         self.options['directory'] = b_options.get('directory')
