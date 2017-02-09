@@ -1,6 +1,13 @@
 Change History
 **************
 
+0.8.6 (2017-02-09)
+==================
+
+* added ``extra-options`` which replaces also the ``archive-root`` option.
+* added test module test_unit.py for unit-testing.
+
+
 0.8.5 (2017-02-01)
 ==================
 
