@@ -35,6 +35,10 @@ def make_dirs(name, user):
     make_dir(name, etc_uid, etc_gid, 0o755, created)
 
 
+def parse_extra_options():
+    pass
+
+
 class Recipe(object):
     """This recipe is used by zc.buildout"""
 
