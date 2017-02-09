@@ -35,8 +35,13 @@ def make_dirs(name, user):
     make_dir(name, etc_uid, etc_gid, 0o755, created)
 
 
-def parse_extra_options():
-    pass
+def parse_extra_options(options_str):
+    if options_str:
+        extra_options = options_str.split()
+        extra_options = dict([('=' in opt) and opt.split('=', 1) for opt in extra_options])
+    else:
+        extra_options = {}
+    return extra_options
 
 
 class Recipe(object):
