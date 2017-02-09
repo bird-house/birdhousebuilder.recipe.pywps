@@ -35,10 +35,15 @@ def make_dirs(name, user):
     make_dir(name, etc_uid, etc_gid, 0o755, created)
 
 
-def parse_extra_options(options_str):
-    if options_str:
-        extra_options = options_str.split()
-        extra_options = dict([('=' in opt) and opt.split('=', 1) for opt in extra_options])
+def parse_extra_options(option_str):
+    if option_str:
+        try:
+            extra_options = option_str.split()
+            extra_options = dict([('=' in opt) and opt.split('=', 1) for opt in extra_options])
+        except Exception:
+            msg = "Can not parse extra-options: {}".format(option_str)
+            logging.exception(msg)
+            raise Exception(msg)
     else:
         extra_options = {}
     return extra_options
