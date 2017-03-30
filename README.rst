@@ -97,6 +97,9 @@ Buildout options for ``pywps``:
 **loglevel**
    Logging level for ``PyWPS``. Default: ``WARN``
 
+**logformat**
+   Logging string format for ``PyWPS``. Default: ``%(asctime)s] [%(levelname)s] line=%(lineno)s module=%(module)s %(message)s``
+
 **parallelprocesses**
    Maximum number of parallel running processes.
    The effective number of parallel running processes is limited by the number of cores

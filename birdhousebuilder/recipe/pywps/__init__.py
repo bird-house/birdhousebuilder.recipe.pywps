@@ -162,6 +162,8 @@ class Recipe(object):
         self.options['country'] = self.options.get('country', '')
         self.options['provider_url'] = self.options['provider-url'] = self.options.get('provider-url', '')
         self.options['loglevel'] = self.options.get('loglevel', 'WARN')
+        self.options['logformat'] = self.options.get(
+            'logformat', '%(asctime)s] [%(levelname)s] line=%(lineno)s module=%(module)s %(message)s')
         self.options['parallelprocesses'] = self.options.get('parallelprocesses', '2')
         self.options['maxprocesses'] = self.options.get('maxprocesses', '30')
         self.options['maxinputparamlength'] = self.options.get('maxinputparamlength', '1024')
