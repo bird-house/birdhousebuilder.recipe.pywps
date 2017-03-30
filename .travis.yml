@@ -6,7 +6,7 @@ sudo: false
 install:
  - mkdir -p buildout-cache/eggs
  - mkdir -p buildout-cache/downloads
- - python bootstrap.py
+ - python bootstrap.py --setuptools-version=33.1.1
  - ./bin/buildout
 script:
  - ./bin/test -m birdhousebuilder.recipe.pywps
