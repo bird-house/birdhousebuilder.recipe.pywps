@@ -100,6 +100,10 @@ Buildout options for ``pywps``:
 **logformat**
    Logging string format for ``PyWPS``. Default: ``%(asctime)s] [%(levelname)s] line=%(lineno)s module=%(module)s %(message)s``
 
+**database**
+   Database where the logs about requests/responses is to be stored. Allowed values are ``memory`` or ``sqlite``.
+   Default: ``sqlite``.
+
 **parallelprocesses**
    Maximum number of parallel running processes.
    The effective number of parallel running processes is limited by the number of cores
