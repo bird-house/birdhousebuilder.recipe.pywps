@@ -169,6 +169,7 @@ class Recipe(object):
         self.options['maxinputparamlength'] = self.options.get('maxinputparamlength', '1024')
         self.options['maxsingleinputsize'] = self.options.get('maxsingleinputsize', '30mb')
         self.options['maxrequestsize'] = self.options.get('maxrequestsize', '30mb')
+        self.options['database'] = self.options.get('database', 'sqlite')
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # extra options
@@ -188,6 +189,10 @@ class Recipe(object):
         cache_path = os.path.join(
             self.options['lib-directory'], 'cache', self.name)
         make_dirs(cache_path, self.options['user'])
+
+        db_path = os.path.join(
+            self.options['lib-directory'], 'db', self.name)
+        make_dirs(db_path, self.options['user'])
 
     def install(self, update=False):
         installed = []
