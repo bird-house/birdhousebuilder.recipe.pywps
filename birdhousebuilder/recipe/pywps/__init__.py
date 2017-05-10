@@ -175,6 +175,7 @@ class Recipe(object):
         # processing options
         self.options['mode'] = self.options.get('mode', 'default')
         self.options['remotehost'] = self.options.get('remotehost', 'localhost')
+        self.options['path'] = self.options.get('path', '')
         # extra options
         self.extra_options = parse_extra_options(self.options.get('extra-options', ''))
 
