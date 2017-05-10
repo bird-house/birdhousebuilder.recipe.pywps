@@ -172,6 +172,9 @@ class Recipe(object):
         self.options['database'] = self.options.get('database', 'sqlite')
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
+        # processing options
+        self.options['mode'] = self.options.get('mode', 'default')
+        self.options['remotehost'] = self.options.get('remotehost', 'localhost')
         # extra options
         self.extra_options = parse_extra_options(self.options.get('extra-options', ''))
 
