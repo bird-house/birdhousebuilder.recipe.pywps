@@ -1,7 +1,7 @@
 Change History
 **************
 
-current
+0.8.9 (2017-05-11)
 =================
 
 * added processing options ``mode`` and ``remotehost``.
