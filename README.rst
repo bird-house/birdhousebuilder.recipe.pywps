@@ -82,6 +82,9 @@ Buildout options for ``pywps``:
 **workers**
    The number of gunicorn workers for handling requests. Default: 1
 
+**application**
+   PyWPS WSGI Application. Default: ``${name}:application``.
+
 **title**
    Title used for your WPS service.
 
