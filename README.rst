@@ -85,9 +85,6 @@ Buildout options for ``pywps``:
 **processes-import**
    Python package with processes.
 
-**processes-path**
-   Path the ``PyWPS`` processes.
-
 **title**
    Title used for your WPS service.
 

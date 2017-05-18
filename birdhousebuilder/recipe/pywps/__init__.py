@@ -150,9 +150,6 @@ class Recipe(object):
         # pywps options
         self.options['processes_import'] = self.options['processes-import'] = \
             self.options.get('processes-import', 'processes')
-        processes_path = os.path.join(b_options.get('directory'), 'processes')
-        self.options['processes_path'] = self.options['processes-path'] = \
-            self.options.get('processes-path', processes_path)
 
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
