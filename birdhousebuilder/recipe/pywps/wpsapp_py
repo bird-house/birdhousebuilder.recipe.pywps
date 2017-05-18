@@ -1,6 +1,0 @@
-import os
-from pywps.app.Service import Service
-
-from ${processes_import} import processes
-
-application = Service(processes, [os.environ['PYWPS_CFG']])

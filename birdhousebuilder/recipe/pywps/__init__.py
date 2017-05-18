@@ -20,8 +20,6 @@ import logging
 
 templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__),
                            "pywps.cfg"))
-templ_app = Template(filename=os.path.join(os.path.dirname(__file__),
-                     "wpsapp_py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__),
                           "gunicorn.conf_py"))
 templ_cmd = Template(
@@ -148,9 +146,6 @@ class Recipe(object):
         self.options['loglevel'] = options.get('loglevel', 'info')
 
         # pywps options
-        self.options['processes_import'] = self.options['processes-import'] = \
-            self.options.get('processes-import', 'processes')
-
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
             'abstract', 'See http://pywps.org/')
@@ -201,7 +196,6 @@ class Recipe(object):
             installed += list(self.deployment.install())
         installed += list(self.conda.install(update))
         installed += list(self.install_config())
-        installed += list(self.install_app())
         installed += list(self.install_gunicorn())
         installed += list(self.install_supervisor(update))
         installed += list(self.install_nginx_default(update))
@@ -230,16 +224,6 @@ class Recipe(object):
         config = Configuration(self.buildout, self.name + '.py', {
             'deployment': self.deployment_name,
             'directory': os.path.join(self.options['etc-prefix'], 'gunicorn'),
-            'text': text})
-        return [config.install()]
-
-    def install_app(self):
-        """
-        install etc/pywps/my_app.py
-        """
-        text = templ_app.render(**self.options)
-        config = Configuration(self.buildout, self.name + '_app.py', {
-            'deployment': self.deployment_name,
             'text': text})
         return [config.install()]
 

@@ -82,9 +82,6 @@ Buildout options for ``pywps``:
 **workers**
    The number of gunicorn workers for handling requests. Default: 1
 
-**processes-import**
-   Python package with processes.
-
 **title**
    Title used for your WPS service.
 
