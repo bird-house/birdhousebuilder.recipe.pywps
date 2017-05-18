@@ -239,7 +239,7 @@ class Recipe(object):
              #'env': 'birdhouse',
              'program': self.name,
              'command': templ_cmd.render(**self.options),
-             'directory': self.options['etc-directory'],
+             'directory': self.options['lib-directory'],
              'stopwaitsecs': '30',
              'killasgroup': 'true',
              })
