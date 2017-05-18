@@ -1,6 +1,11 @@
 Change History
 **************
 
+current
+=======
+
+* cleaned up buildout build ... fixed travis.
+
 0.8.9 (2017-05-11)
 =================
 
