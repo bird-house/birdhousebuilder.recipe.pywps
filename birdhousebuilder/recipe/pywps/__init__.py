@@ -23,9 +23,7 @@ templ_pywps_cfg = Template(filename=os.path.join(os.path.dirname(__file__),
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__),
                           "gunicorn.conf_py"))
 templ_cmd = Template(
-    "${bin_directory}/python ${conda_prefix}/bin/gunicorn ${name}_app:application -c ${prefix}/etc/gunicorn/${name}.py")
-# templ_runwps = Template(filename=os.path.join(os.path.dirname(__file__),
-#                         "runwps.sh"))
+    "${bin_directory}/python ${conda_prefix}/bin/gunicorn ${application} -c ${prefix}/etc/gunicorn/${name}.py")
 
 
 def make_dirs(name, user):
@@ -146,6 +144,7 @@ class Recipe(object):
         self.options['loglevel'] = options.get('loglevel', 'info')
 
         # pywps options
+        self.options['application'] = options.get('application', self.name + ':application')
         self.options['title'] = options.get('title', 'PyWPS Server')
         self.options['abstract'] = options.get(
             'abstract', 'See http://pywps.org/')
