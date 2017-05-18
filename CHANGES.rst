@@ -7,6 +7,7 @@ current
 * cleaned up buildout build ... fixed travis.
 * removed unused options processes-path and processes-import.
 * does not generate etc/pywps/app.py anymore.
+* added application option.
 
 0.8.9 (2017-05-11)
 =================
