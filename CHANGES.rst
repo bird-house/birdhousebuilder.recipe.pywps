@@ -5,6 +5,7 @@ current
 =======
 
 * cleaned up buildout build ... fixed travis.
+* removed unused processes-path option.
 
 0.8.9 (2017-05-11)
 =================
