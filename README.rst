@@ -112,6 +112,9 @@ Buildout options for ``pywps``:
 **maxrequestsize**
    Maximal request size accepted in WPS process. Default: 30mb
 
+**allowedinputpaths**
+   List of server paths which are allowed to be accessed by file URL complex input parameters.
+
 **mode**
    Processing mode to run jobs. Allowed values are ``default`` (multiprocessing) and ``slurm``.
    Default: default
