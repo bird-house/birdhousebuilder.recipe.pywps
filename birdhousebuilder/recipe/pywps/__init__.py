@@ -161,6 +161,8 @@ class Recipe(object):
         self.options['maxsingleinputsize'] = self.options.get('maxsingleinputsize', '30mb')
         self.options['maxrequestsize'] = self.options.get('maxrequestsize', '30mb')
         self.options['database'] = self.options.get('database', 'sqlite')
+        root_cache_path = os.path.join(self.options['lib-directory'], 'cache')
+        self.options['allowedinputpaths'] = self.options.get('allowedinputpaths', root_cache_path)
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # processing options
@@ -181,8 +183,7 @@ class Recipe(object):
             self.options['lib-directory'], 'tmp', self.name)
         make_dirs(tmp_path, self.options['user'])
 
-        cache_path = os.path.join(
-            self.options['lib-directory'], 'cache', self.name)
+        cache_path = os.path.join(root_cache_path, self.name)
         make_dirs(cache_path, self.options['user'])
 
         db_path = os.path.join(
