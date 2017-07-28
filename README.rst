@@ -119,8 +119,6 @@ Buildout options for ``pywps``:
    Processing mode to run jobs. Allowed values are ``default`` (multiprocessing) and ``slurm``.
    Default: default
 
-**remotehost**
-   Remote host to run jobs. Default: localhost
 
 
 Example usage
