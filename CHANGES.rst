@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.9.2 (2017-07-28)
+==================
+
+* removed unused ``remotehost`` option.
+* updated ``database`` option.
+
 0.9.1 (2017-06-28)
 ==================
 
@@ -95,7 +101,7 @@ Change History
 0.3.10 (2016-02-12)
 ===================
 
-* added ``maxoperations`` and ``maxfilesize`` to options. 
+* added ``maxoperations`` and ``maxfilesize`` to options.
 
 0.3.9 (2016-02-08)
 ==================
