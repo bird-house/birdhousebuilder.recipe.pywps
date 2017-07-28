@@ -167,7 +167,6 @@ class Recipe(object):
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # processing options
         self.options['mode'] = self.options.get('mode', 'default')
-        self.options['remotehost'] = self.options.get('remotehost', 'localhost')
         self.options['path'] = self.options.get('path', '')
         # extra options
         self.extra_options = parse_extra_options(self.options.get('extra-options', ''))
@@ -237,7 +236,7 @@ class Recipe(object):
             {'prefix': self.options.get('prefix'),
              'user': self.options.get('user'),
              'etc-user': self.options.get('etc-user'),
-             #'env': 'birdhouse',
+             # 'env': 'birdhouse',
              'program': self.name,
              'command': templ_cmd.render(**self.options),
              'directory': self.options['lib-directory'],
@@ -256,7 +255,7 @@ class Recipe(object):
             {'prefix': self.options['prefix'],
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
-             #'env': 'birdhouse',
+             # 'env': 'birdhouse',
              'name': 'default',
              'input': os.path.join(os.path.dirname(__file__),
                                    "nginx-default.conf"),
@@ -277,7 +276,7 @@ class Recipe(object):
              'prefix': self.options['prefix'],
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
-             #'env': 'birdhouse',
+             # 'env': 'birdhouse',
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'hostname': self.options.get('hostname'),
              'http_port': self.options['http-port'],
