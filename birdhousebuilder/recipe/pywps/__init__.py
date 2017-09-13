@@ -163,6 +163,9 @@ class Recipe(object):
         self.options['database'] = self.options.get('database', 'sqlite')
         root_cache_path = os.path.join(self.options['lib-directory'], 'cache')
         self.options['allowedinputpaths'] = self.options.get('allowedinputpaths', root_cache_path)
+        output_path_comm = os.path.join(
+            self.options['lib-directory'], 'outputs')
+        self.options['outputpath'] = self.options.get('outputpath', output_path_comm)
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # processing options
@@ -256,6 +259,7 @@ class Recipe(object):
              'user': self.options['user'],
              'etc-user': self.options.get('etc-user'),
              # 'env': 'birdhouse',
+             'outputpath': self.options['outputpath'],
              'name': 'default',
              'input': os.path.join(os.path.dirname(__file__),
                                    "nginx-default.conf"),
