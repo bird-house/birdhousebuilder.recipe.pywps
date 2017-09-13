@@ -18,7 +18,7 @@ raw_env = ["PYWPS_CFG=${prefix}/etc/pywps/${name}.cfg",
            "PATH=${bin_directory}:${conda_prefix}/bin:/usr/bin:/bin:/usr/local/bin",
            "GDAL_DATA=${conda_prefix}/share/gdal",
            "NCARG_ROOT=${conda_prefix}",
-           "HOME=${home}",
+           "HOME=${outputpath}/${name}",
            "PYTHONPATH=%s" % python_path(),
            ]
 
