@@ -166,6 +166,9 @@ class Recipe(object):
         output_path_comm = os.path.join(
             self.options['lib-directory'], 'outputs')
         self.options['outputpath'] = self.options.get('outputpath', output_path_comm)
+        tmp_path = os.path.join(
+            self.options['lib-directory'], 'tmp', self.name)
+        self.options['tmppath'] = self.options.get('tmppath', tmp_path)
         self.options['sethomedir'] = self.options.get('sethomedir', 'true')
         self.options['setworkdir'] = self.options.get('setworkdir', 'true')
         # processing options
@@ -180,10 +183,11 @@ class Recipe(object):
         # make dirs
         make_dirs(output_path, self.options['user'])
         make_dirs(self.options['home'], self.options['user'])
+        interm_out=os.path.join(self.options['outputpath'], self.name)
+        make_dirs(interm_out, self.options['user'])
 
-        tmp_path = os.path.join(
-            self.options['lib-directory'], 'tmp', self.name)
         make_dirs(tmp_path, self.options['user'])
+        make_dirs(self.options['tmppath'], self.options['user'])
 
         cache_path = os.path.join(root_cache_path, self.name)
         make_dirs(cache_path, self.options['user'])
