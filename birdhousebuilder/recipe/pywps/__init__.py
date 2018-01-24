@@ -125,14 +125,30 @@ class Recipe(object):
         self.options['hostname'] = self.options.get('hostname', 'localhost')
         if bool_option(self.options, 'enable-https', False):
             self.options['enable_https'] = 'true'
+            enable_https = True
         else:
             self.options['enable_https'] = 'false'
+            enable_https = False
         self.options['http-port'] = self.options['http_port'] = self.options.get('http-port', '8091')
         self.options['https-port'] = self.options['https_port'] = self.options.get('https-port', '28091')
         self.options['http-output-port'] = self.options['http_output_port'] = \
             self.options.get('http-output-port', self.options.get('output-port', '8090'))
         self.options['https-output-port'] = self.options['https_output_port'] = \
             self.options.get('https-output-port', '28090')
+        # set url and outputurl
+        if enable_https:
+            url = "https://{}:{}/wps".format(
+                self.options['hostname'], self.options['https_port'])
+            outputurl = "https://{}:{}/wpsoutputs/{}/".format(
+                self.options['hostname'], self.options['https_output_port'], self.options['name'])
+        else:
+            url = "http://{}:{}/wps".format(
+                self.options['hostname'], self.options['http_port'])
+            outputurl = "http://{}:{}/wpsoutputs/{}/".format(
+                self.options['hostname'], self.options['http_output_port'], self.options['name'])
+        # allow to overwrite url and outputurl
+        self.options['url'] = self.options.get('url', url)
+        self.options['outputurl'] = self.options.get('outputurl', outputurl)
 
         # gunicorn options
         output_path = os.path.join(
