@@ -1,6 +1,11 @@
 Change History
 **************
 
+0.9.3 (2018-01-24)
+==================
+
+* added outputurl option to overwrite defaults.
+
 0.9.2 (2017-07-28)
 ==================
 
