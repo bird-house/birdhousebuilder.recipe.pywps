@@ -7,7 +7,7 @@ from setuptools import setup
 
 name = 'birdhousebuilder.recipe.pywps'
 
-version = '0.9.2'
+version = '0.9.3'
 description = 'A Buildout recipe to install and configure PyWPS Web Processing Service with conda.'
 long_description = (
     open('README.rst').read() + '\n' +
