@@ -139,6 +139,10 @@ class Recipe(object):
             self.options.get('ssl-verify-client', 'off')
         self.options['ssl-client-certificate'] = self.options['ssl_client_certificate'] = \
             self.options.get('ssl-client-certificate', 'esgf-ca-bundle.crt')
+        self.options['ssl-client-certificate-url'] = self.options['ssl_client_certificate_url'] = \
+            self.options.get(
+                'ssl-client-certificate-url',
+                'https://github.com/ESGF/esgf-dist/raw/master/installer/certs/esgf-ca-bundle.crt')
         # set url and outputurl
         if enable_https:
             url = "https://{}:{}/wps".format(
@@ -302,7 +306,8 @@ class Recipe(object):
              'http_port': self.options['http-port'],
              'https_port': self.options['https-port'],
              'ssl-verify-client': self.options['ssl-verify-client'],
-             'ssl-client-certificate': self.options['ssl-client-certificate']
+             'ssl-client-certificate': self.options['ssl-client-certificate'],
+             'ssl-client-certificate-url': self.options['ssl-client-certificate-url']
              })
         return script.install(update=update)
 
