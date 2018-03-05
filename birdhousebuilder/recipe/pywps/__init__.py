@@ -135,6 +135,10 @@ class Recipe(object):
             self.options.get('http-output-port', self.options.get('output-port', '8090'))
         self.options['https-output-port'] = self.options['https_output_port'] = \
             self.options.get('https-output-port', '28090')
+        self.options['ssl-verify-client'] = self.options['ssl_verify_client'] = \
+            self.options.get('ssl-verify-client', 'off')
+        self.options['ssl-client-certificate'] = self.options['ssl_client_certificate'] = \
+            self.options.get('ssl-client-certificate', 'esgf-ca-bundle.crt')
         # set url and outputurl
         if enable_https:
             url = "https://{}:{}/wps".format(
@@ -297,6 +301,8 @@ class Recipe(object):
              'hostname': self.options.get('hostname'),
              'http_port': self.options['http-port'],
              'https_port': self.options['https-port'],
+             'ssl-verify-client': self.options['ssl-verify-client'],
+             'ssl-client-certificate': self.options['ssl-client-certificate']
              })
         return script.install(update=update)
 
