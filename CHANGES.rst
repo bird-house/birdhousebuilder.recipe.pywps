@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.10.0 (2018-03-20)
+===================
+
+* cleaned up recipe (#15).
+* update nginx option with ssl-verify option (#13).
+
 0.9.3 (2018-01-24)
 ==================
 
