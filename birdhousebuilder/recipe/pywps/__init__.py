@@ -284,8 +284,8 @@ class Recipe(object):
              'input': os.path.join(os.path.dirname(__file__),
                                    "nginx-default.conf"),
              'hostname': self.options.get('hostname'),
-             'http_port': self.options.get('http-output-port'),
-             'https_port': self.options.get('https-output-port')
+             'http-port': self.options.get('http-output-port'),
+             'https-port': self.options.get('https-output-port')
              })
         return script.install(update=update)
 
@@ -303,8 +303,8 @@ class Recipe(object):
              # 'env': 'birdhouse',
              'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'hostname': self.options.get('hostname'),
-             'http_port': self.options['http-port'],
-             'https_port': self.options['https-port'],
+             'http-port': self.options['http-port'],
+             'https-port': self.options['https-port'],
              'ssl-verify-client': self.options['ssl-verify-client'],
              'ssl-client-certificate': self.options['ssl-client-certificate'],
              'ssl-client-certificate-url': self.options['ssl-client-certificate-url']
