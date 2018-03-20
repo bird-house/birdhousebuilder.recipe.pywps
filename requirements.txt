@@ -1,0 +1,7 @@
+setuptools
+zc.buildout
+zc.recipe.deployment>=1.3.0
+Mako
+birdhousebuilder.recipe.conda
+birdhousebuilder.recipe.supervisor
+birdhousebuilder.recipe.nginx

@@ -22,14 +22,8 @@ default = %(name)s:Recipe
 default = %(name)s:uninstall
 ''' % globals()
 
-reqs = ['setuptools',
-        'zc.buildout',
-        'zc.recipe.deployment',
-        'Mako',
-        'birdhousebuilder.recipe.conda',
-        'birdhousebuilder.recipe.supervisor',
-        'birdhousebuilder.recipe.nginx']
-tests_reqs = ['zc.buildout', 'zope.testing']
+reqs = [line.strip() for line in open('requirements.txt')]
+tests_reqs = [line.strip() for line in open('requirements-dev.txt')]
 
 setup(name=name,
       version=version,
