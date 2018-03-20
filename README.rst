@@ -79,6 +79,18 @@ Buildout options for ``pywps``:
 **https-output-port**
    The https port of the ``PyWPS`` output file service (nginx). Default: ``28090``
 
+**ssl-verify-client**
+ Nginx option to verify SSL client certificates. Possible values: ``off`` (default), ``on``, ``optional``.
+ `Nginx ssl_verify_client option`_
+
+**ssl-client-certificate**
+ Nginx option with the name of the bundle of CA certificates for the client. Default: ``esgf-ca-bundle.crt``.
+ `Nginx ssl_client_certificate`_
+
+**ssl-client-certificate-url**
+ Optional URL to download a bundle of CA certificates for ``ssl-client-certificate``. Default:
+ https://github.com/ESGF/esgf-dist/raw/master/installer/certs/esgf-ca-bundle.crt
+
 **workers**
    The number of gunicorn workers for handling requests. Default: 1
 
